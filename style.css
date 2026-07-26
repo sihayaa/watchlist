@@ -1,0 +1,313 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    background:#161b22;
+    color:#f0f6fc;
+    padding:40px;
+}
+
+/* Container */
+
+.container{
+    max-width:1400px;
+    margin:auto;
+}
+
+h1{
+    margin-bottom:25px;
+    font-size:40px;
+}
+
+/* ===========================
+   TOP TOOLBAR
+=========================== */
+
+.toolbar{
+
+    background:#212b3a;
+
+    border:1px solid #30363d;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    margin-bottom:25px;
+}
+
+.toolbar-row{
+
+    display:flex;
+
+    gap:15px;
+
+    align-items:flex-end;
+
+    flex-wrap:wrap;
+}
+
+.search-row{
+
+    margin-top:18px;
+}
+
+.field{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+}
+
+.field label{
+
+    font-size:13px;
+
+    color:#9da7b3;
+}
+
+.field input,
+.field select{
+
+    background:#111827;
+
+    border:1px solid #374151;
+
+    color:white;
+
+    border-radius:8px;
+
+    padding:11px 14px;
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:.2s;
+}
+
+.field input:focus,
+.field select:focus{
+
+    border-color:#58a6ff;
+}
+
+/* Widths */
+
+.title-field input{
+
+    width:360px;
+}
+
+.field select{
+
+    width:150px;
+}
+
+.progress-field input{
+
+    width:90px;
+}
+
+button{
+
+    background:#238636;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 24px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+    transition:.2s;
+}
+
+button:hover{
+
+    background:#2ea043;
+}
+
+/* ===========================
+SEARCH
+=========================== */
+
+.search-row input{
+
+    width:350px;
+
+    background:#111827;
+
+    color:white;
+
+    border:1px solid #374151;
+
+    border-radius:8px;
+
+    padding:12px 16px;
+
+    font-size:15px;
+
+    outline:none;
+}
+
+.search-row input:focus{
+
+    border-color:#58a6ff;
+}
+
+/* ===========================
+WATCHLIST GRID
+=========================== */
+
+.grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+
+    gap:20px;
+}
+
+/* ===========================
+CARD
+=========================== */
+
+.card{
+
+    background:#212b3a;
+
+    border:1px solid #30363d;
+
+    border-radius:14px;
+
+    padding:20px;
+
+    transition:.25s;
+}
+
+.card:hover{
+
+    transform:translateY(-4px);
+
+    border-color:#58a6ff;
+}
+
+.card.completed{
+
+    border-color:#2ea043;
+}
+
+.card h3{
+
+    margin-bottom:14px;
+
+    font-size:28px;
+}
+
+.badges{
+
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:15px;
+}
+
+.badge{
+
+    background:#394559;
+
+    padding:6px 12px;
+
+    border-radius:50px;
+
+    font-size:13px;
+}
+
+.progress{
+
+    margin-bottom:15px;
+
+    color:#c9d1d9;
+
+    line-height:1.6;
+}
+
+/* ===========================
+CARD BUTTONS
+=========================== */
+
+.card-actions{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:18px;
+}
+
+.edit-btn{
+
+    background:#2563eb;
+}
+
+.edit-btn:hover{
+
+    background:#3b82f6;
+}
+
+.complete{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    cursor:pointer;
+
+    font-size:14px;
+}
+
+/* ===========================
+RESPONSIVE
+=========================== */
+
+@media(max-width:900px){
+
+    .toolbar-row{
+
+        flex-direction:column;
+
+        align-items:stretch;
+    }
+
+    .title-field input,
+    .field select,
+    .progress-field input,
+    .search-row input{
+
+        width:100%;
+    }
+
+    button{
+
+        width:100%;
+    }
+}
