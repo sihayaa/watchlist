@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Watchlist</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI, sans-serif;
+}
+
+body{
+    background:#161b22;
+    color:white;
+    padding:40px;
+}
+
+h1{
+    margin-bottom:20px;
+    font-size:32px;
+}
+
+/* Top Card */
+
+.toolbar{
+    background:#1f2937;
+    border:1px solid #30363d;
+    border-radius:12px;
+    padding:18px;
+    display:flex;
+    align-items:end;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:25px;
+}
+
+.field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.field label{
+    font-size:12px;
+    color:#9ca3af;
+}
+
+input,
+select{
+    background:#111827;
+    color:white;
+    border:1px solid #374151;
+    border-radius:8px;
+    padding:10px 12px;
+    font-size:14px;
+}
+
+.title{
+    width:340px;
+}
+
+.small{
+    width:120px;
+}
+
+.episodes{
+    width:90px;
+}
+
+button{
+    background:#238636;
+    color:white;
+    border:none;
+    border-radius:8px;
+    padding:11px 22px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.2s;
+}
+
+button:hover{
+    background:#2ea043;
+}
+
+/* Search */
+
+.search{
+    margin-bottom:20px;
+}
+
+.search input{
+    width:320px;
+}
+
+/* Grid */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:18px;
+}
+
+.card{
+    background:#1f2937;
+    border:1px solid #30363d;
+    border-radius:12px;
+    padding:18px;
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    border-color:#58a6ff;
+}
+
+.card h3{
+    margin-bottom:8px;
+}
+
+.badges{
+    display:flex;
+    gap:8px;
+    margin:12px 0;
+}
+
+.badge{
+    background:#374151;
+    padding:5px 10px;
+    border-radius:999px;
+    font-size:12px;
+}
+
+.progress{
+    color:#8b949e;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎬 Our Watchlist</h1>
+
+<div class="toolbar">
+
+    <div class="field">
+        <label>Title</label>
+        <input class="title" placeholder="Movie, Anime or TV Series">
+    </div>
+
+    <div class="field">
+        <label>Genre</label>
+        <select class="small">
+            <option>Action</option>
+            <option>Fantasy</option>
+            <option>Comedy</option>
+            <option>Drama</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Type</label>
+        <select class="small">
+            <option>Movie</option>
+            <option>Series</option>
+            <option>Anime</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Episodes</label>
+        <input class="episodes" type="number" value="24">
+    </div>
+
+    <button>+ Add</button>
+
+</div>
+
+<div class="search">
+    <input placeholder="🔍 Search titles...">
+</div>
+
+<div class="grid">
+
+    <div class="card">
+        <h3>Frieren</h3>
+
+        <div class="badges">
+            <div class="badge">Anime</div>
+            <div class="badge">Fantasy</div>
+        </div>
+
+        <div class="progress">
+            Episodes: 18 / 28
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Interstellar</h3>
+
+        <div class="badges">
+            <div class="badge">Movie</div>
+            <div class="badge">Sci-Fi</div>
+        </div>
+
+        <div class="progress">
+            ✔ Completed
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>The Boys</h3>
+
+        <div class="badges">
+            <div class="badge">Series</div>
+            <div class="badge">Action</div>
+        </div>
+
+        <div class="progress">
+            Season 4 • Episode 3
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
