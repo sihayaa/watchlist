@@ -27,7 +27,7 @@ async function loadWatchlist() {
 
     watchlist.innerHTML = "";
 
-    const { data, error } = await supabaseClient.
+    const { data, error } = await supabaseClient
         .from("watchlist")
         .select("*")
         .order("created_at", { ascending: false });
