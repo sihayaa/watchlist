@@ -196,11 +196,12 @@ button:hover{
 }
 
 .complete{
-    display:flex;
+    display:inline-flex;
     align-items:center;
-    gap:6px;
+    gap:8px;
     color:#3FA56A;
     font-size:13px;
+    white-space:nowrap;
 }
 
 @media(max-width:900px){
