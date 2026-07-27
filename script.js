@@ -127,7 +127,7 @@ function renderCard(item) {
         if (!confirm(`Delete "${item.title}"?`))
             return;
 
-        await supabaseClient.
+        await supabaseClient
             .from("watchlist")
             .delete()
             .eq("id", item.id);
@@ -148,7 +148,7 @@ function renderCard(item) {
             let newEpisode = prompt("Episode:", item.episode);
             if (newEpisode === null) return;
 
-            await supabaseClient.
+            await supabaseClient
                 .from("watchlist")
                 .update({
                     season: Number(newSeason),
@@ -182,7 +182,7 @@ async function addItem() {
         completed: false
     };
 
-    const { error } = await supabaseClient.
+    const { error } = await supabaseClient
         .from("watchlist")
         .insert([newItem]);
 
