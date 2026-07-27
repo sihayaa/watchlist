@@ -76,33 +76,38 @@ function renderCard(item) {
     }
 
     card.innerHTML = `
-        <h3>${item.title}</h3>
+<div class="card-top">
 
-        <div class="badges">
-            <span class="badge">${item.type}</span>
-            <span class="badge">${item.genre}</span>
-        </div>
+    ${item.type !== "Movie" ? `
+        <button class="icon-btn edit-btn" title="Edit Progress">
+            ✏
+        </button>
+    ` : ""}
 
-        ${progressHTML}
+    <button class="icon-btn delete-btn" title="Delete">
+        ✕
+    </button>
 
-        <div class="card-actions">
+</div>
 
-            ${editButton}
+<h3>${item.title}</h3>
 
-            <label class="complete">
-                <input
-                    type="checkbox"
-                    class="completedCheck"
-                    ${item.completed ? "checked" : ""}
-                >
-                Completed
-            </label>
-            <button class="delete-btn">
-                Delete
-            </button>
+<div class="badges">
+    <span class="badge">${item.type}</span>
+    <span class="badge">${item.genre}</span>
+</div>
 
-        </div>
-    `;
+${progressHTML}
+
+<label class="complete">
+    <input
+        type="checkbox"
+        class="completedCheck"
+        ${item.completed ? "checked" : ""}
+    >
+    Completed
+</label>
+`;
 
     const checkbox = card.querySelector(".completedCheck");
 
