@@ -109,7 +109,7 @@ function renderCard(item) {
 
     checkbox.addEventListener("change", async function () {
 
-        await supabaseClient.
+        await supabaseClient
             .from("watchlist")
             .update({
                 completed: this.checked
