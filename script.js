@@ -97,7 +97,6 @@ function renderCard(item) {
                 >
                 Completed
             </label>
-
             <button class="delete-btn">
                 Delete
             </button>
