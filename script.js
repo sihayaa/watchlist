@@ -27,7 +27,7 @@ async function loadWatchlist() {
 
     watchlist.innerHTML = "";
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient.
         .from("watchlist")
         .select("*")
         .order("created_at", { ascending: false });
@@ -109,7 +109,7 @@ function renderCard(item) {
 
     checkbox.addEventListener("change", async function () {
 
-        await supabase
+        await supabaseClient.
             .from("watchlist")
             .update({
                 completed: this.checked
@@ -127,7 +127,7 @@ function renderCard(item) {
         if (!confirm(`Delete "${item.title}"?`))
             return;
 
-        await supabase
+        await supabaseClient.
             .from("watchlist")
             .delete()
             .eq("id", item.id);
@@ -148,7 +148,7 @@ function renderCard(item) {
             let newEpisode = prompt("Episode:", item.episode);
             if (newEpisode === null) return;
 
-            await supabase
+            await supabaseClient.
                 .from("watchlist")
                 .update({
                     season: Number(newSeason),
@@ -182,7 +182,7 @@ async function addItem() {
         completed: false
     };
 
-    const { error } = await supabase
+    const { error } = await supabaseClient.
         .from("watchlist")
         .insert([newItem]);
 
