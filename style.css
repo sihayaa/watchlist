@@ -223,3 +223,76 @@ button:hover{
         align-items:stretch;
     }
 }
+
+
+
+.card{
+    position:relative;
+    padding-top:52px;
+}
+
+.card-top{
+    position:absolute;
+    top:14px;
+    right:14px;
+    display:flex;
+    gap:8px;
+}
+
+.icon-btn{
+    width:30px !important;
+    height:30px !important;
+    min-width:30px;
+    padding:0 !important;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    font-size:14px;
+    line-height:1;
+    background:#181818;
+    border:1px solid #2D2D2D;
+    cursor:pointer;
+    transition:.2s;
+    box-shadow:none;
+}
+
+.icon-btn:hover{
+    transform:translateY(-1px);
+}
+
+.edit-btn{
+    background:#181818;
+    border:1px solid rgba(182,108,255,.25);
+    color:#CFAAFF;
+}
+
+.edit-btn:hover{
+    background:#262626;
+    border-color:#B66CFF;
+    color:#fff;
+}
+
+.delete-btn{
+    background:#181818;
+    border:1px solid rgba(255,90,130,.25);
+    color:#FF7F9E;
+}
+
+.delete-btn:hover{
+    background:#4A1524;
+    border-color:#FF5C8A;
+    color:#fff;
+}
+
+.card h3{
+    padding-right:76px;
+}
+
+.card-actions{
+    display:none;
+}
+
+.complete{
+    margin-top:16px;
+}
