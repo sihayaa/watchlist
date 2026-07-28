@@ -73,6 +73,43 @@
     <div id="watchlist" class="grid"></div>
 
 </div>
+    <div id="progressModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>🎬 Update Progress</h2>
+
+        <p>Where are we now?</p>
+
+        <div class="modal-row">
+
+            <div class="field">
+                <label>Season</label>
+                <input id="modalSeason" type="number" min="1">
+            </div>
+
+            <div class="field">
+                <label>Episode</label>
+                <input id="modalEpisode" type="number" min="1">
+            </div>
+
+        </div>
+
+        <div class="modal-buttons">
+
+            <button id="cancelModal" class="secondary-btn">
+                Cancel
+            </button>
+
+            <button id="saveModal">
+                Save
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
