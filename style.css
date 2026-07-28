@@ -302,59 +302,49 @@ MODAL
 =========================== */
 
 .modal{
-
     display:none;
-
     position:fixed;
-
     inset:0;
-
-    background:rgba(0,0,0,.75);
-
-    backdrop-filter:blur(6px);
-
+    background:rgba(0,0,0,.65);
+    backdrop-filter:blur(5px);
     justify-content:center;
-
     align-items:center;
-
     z-index:999;
-
 }
 
 .modal.show{
-
     display:flex;
-
 }
 
 .modal-content{
 
-    width:360px;
+    width:340px;
 
-    background:rgba(18,18,18,.95);
+    background:rgba(18,18,18,.96);
 
-    border:1px solid rgba(182,108,255,.18);
+    border:1px solid rgba(182,108,255,.15);
 
-    border-radius:22px;
+    border-radius:18px;
 
-    padding:20px;
+    padding:18px;
 
     box-shadow:
-        0 0 25px rgba(182,108,255,.12),
-        0 20px 60px rgba(0,0,0,.5);
+        0 12px 40px rgba(0,0,0,.45),
+        0 0 18px rgba(182,108,255,.12);
 
 }
 
 .modal-content h2{
 
+    font-size:26px;
+
     color:#B66CFF;
 
     text-align:center;
 
-    margin-bottom:8px;
+    margin-bottom:6px;
 
-    text-shadow:
-        0 0 8px rgba(182,108,255,.35);
+    text-shadow:0 0 6px rgba(182,108,255,.3);
 
 }
 
@@ -362,7 +352,9 @@ MODAL
 
     text-align:center;
 
-    color:#9AA0A6;
+    color:#8C929A;
+
+    font-size:14px;
 
     margin-bottom:18px;
 
@@ -372,9 +364,9 @@ MODAL
 
     display:flex;
 
-    gap:16px;
+    gap:12px;
 
-    margin-bottom:18px;
+    margin-bottom:22px;
 
 }
 
@@ -390,7 +382,17 @@ MODAL
 
     justify-content:flex-end;
 
-    gap:12px;
+    gap:8px;
+
+}
+
+.modal-buttons button{
+
+    padding:8px 16px;
+
+    font-size:12px;
+
+    border-radius:8px;
 
 }
 
@@ -400,12 +402,12 @@ MODAL
 
     border:1px solid #303030;
 
-    color:#CFCFCF;
+    color:#D0D0D0;
 
 }
 
 .secondary-btn:hover{
 
-    background:#2A2A2A;
+    background:#292929;
 
 }
