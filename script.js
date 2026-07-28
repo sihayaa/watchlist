@@ -217,17 +217,33 @@ checkbox.addEventListener("change", async function () {
 
 const deleteBtn = card.querySelector(".delete-btn");
 
-deleteBtn.addEventListener("click", async function () {
+deleteBtn.addEventListener("click", function () {
 
-    if (!confirm(`Delete "${item.title}"?`))
-        return;
+    const modal = document.getElementById("deleteModal");
+    const text = document.getElementById("deleteText");
+    const yes = document.getElementById("deleteYes");
+    const no = document.getElementById("deleteNo");
 
-    await supabaseClient
-        .from("watchlist")
-        .delete()
-        .eq("id", item.id);
+    text.textContent = `Are you sure you want to delete "${item.title}"?`;
 
-    loadWatchlist();
+    modal.classList.add("show");
+
+    no.onclick = () => {
+        modal.classList.remove("show");
+    };
+
+    yes.onclick = async () => {
+
+        await supabaseClient
+            .from("watchlist")
+            .delete()
+            .eq("id", item.id);
+
+        modal.classList.remove("show");
+
+        loadWatchlist();
+
+    };
 
 });
 
