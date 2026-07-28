@@ -219,12 +219,8 @@ const deleteBtn = card.querySelector(".delete-btn");
 
 deleteBtn.addEventListener("click", async function () {
 
-    await supabaseClient
-    .from("watchlist")
-    .delete()
-    .eq("id", item.id);
-
-loadWatchlist();
+    if (!confirm(`Delete "${item.title}"?`))
+        return;
 
     await supabaseClient
         .from("watchlist")
