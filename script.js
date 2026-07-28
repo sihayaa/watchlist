@@ -146,21 +146,36 @@ ${progressHTML}
 
         editBtn.addEventListener("click", async function () {
 
-            let newSeason = prompt("Season:", item.season);
-            if (newSeason === null) return;
+            const modal = document.getElementById("progressModal");
+const modalSeason = document.getElementById("modalSeason");
+const modalEpisode = document.getElementById("modalEpisode");
+const saveModal = document.getElementById("saveModal");
+const cancelModal = document.getElementById("cancelModal");
 
-            let newEpisode = prompt("Episode:", item.episode);
-            if (newEpisode === null) return;
+modalSeason.value = item.season;
+modalEpisode.value = item.episode;
 
-            await supabaseClient
-                .from("watchlist")
-                .update({
-                    season: Number(newSeason),
-                    episode: Number(newEpisode)
-                })
-                .eq("id", item.id);
+modal.classList.add("show");
 
-            loadWatchlist();
+cancelModal.onclick = () => {
+    modal.classList.remove("show");
+};
+
+saveModal.onclick = async () => {
+
+    await supabaseClient
+        .from("watchlist")
+        .update({
+            season: Number(modalSeason.value),
+            episode: Number(modalEpisode.value)
+        })
+        .eq("id", item.id);
+
+    modal.classList.remove("show");
+
+    loadWatchlist();
+
+};
 
         });
 
