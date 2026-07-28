@@ -10,18 +10,84 @@ const search = document.getElementById("search");
 const seasonField = season.parentElement;
 const episodeField = episode.parentElement;
 
+/* ===========================
+   TMDB SETTINGS
+=========================== */
+
+const TMDB_API_KEY = "7955446551351299457cc0bd52b20050";
+const TMDB_IMAGE = "https://image.tmdb.org/t/p/w500";
+
+const posterCache = {};
+
+async function getPoster(title, type) {
+
+    const cacheKey = `${type}_${title}`;
+
+    if (posterCache[cacheKey]) {
+        return posterCache[cacheKey];
+    }
+
+    const endpoint =
+        type === "Movie"
+            ? "movie"
+            : "tv";
+
+    try {
+
+        const response = await fetch(
+            `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`
+        );
+
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+
+            const poster = data.results[0].poster_path
+                ? `${TMDB_IMAGE}${data.results[0].poster_path}`
+                : "https://placehold.co/300x450?text=No+Poster";
+
+            posterCache[cacheKey] = poster;
+
+            return poster;
+
+        }
+
+    } catch (err) {
+
+        console.error("TMDB Error:", err);
+
+    }
+
+    return "https://placehold.co/300x450?text=No+Poster";
+
+}
+
+/* ===========================
+   SHOW/HIDE SEASON FIELDS
+=========================== */
+
 function updateFields() {
+
     if (type.value === "Movie") {
+
         seasonField.style.display = "none";
         episodeField.style.display = "none";
+
     } else {
+
         seasonField.style.display = "flex";
         episodeField.style.display = "flex";
+
     }
+
 }
 
 type.addEventListener("change", updateFields);
 updateFields();
+
+/* ===========================
+   LOAD WATCHLIST
+=========================== */
 
 async function loadWatchlist() {
 
@@ -30,17 +96,28 @@ async function loadWatchlist() {
     const { data, error } = await supabaseClient
         .from("watchlist")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("created_at", {
+            ascending: false
+        });
 
     if (error) {
+
         console.error(error);
         return;
+
     }
 
     data.forEach(renderCard);
+
 }
 
-function renderCard(item) {
+/* ===========================
+   RENDER CARD
+=========================== */
+
+async function renderCard(item) {
+
+    const poster = await getPoster(item.title, item.type);
 
     const card = document.createElement("div");
     card.className = "card";
@@ -52,8 +129,15 @@ function renderCard(item) {
     let progressHTML = "";
 
     if (item.type === "Movie") {
-        progressHTML = `<div class="progress">🎬 Movie</div>`;
+
+        progressHTML = `
+            <div class="progress">
+                🎬 Movie
+            </div>
+        `;
+
     } else {
+
         progressHTML = `
             <div class="progress">
                 Season:
@@ -63,127 +147,138 @@ function renderCard(item) {
                 <span class="episodeNumber">${item.episode}</span>
             </div>
         `;
-    }
 
-    let editButton = "";
-
-    if (item.type !== "Movie") {
-        editButton = `
-            <button class="edit-btn">
-                Edit Progress
-            </button>
-        `;
     }
 
     card.innerHTML = `
+<div class="poster-wrapper">
+
+<img
+    class="poster"
+    src="${poster}"
+    alt="${item.title}"
+    loading="lazy"
+>
+
+<div class="card-content">
+
 <div class="card-top">
 
-    ${item.type !== "Movie" ? `
-        <button class="icon-btn edit-btn" title="Edit Progress">
-            ✏
-        </button>
-    ` : ""}
+${item.type !== "Movie" ? `
+<button class="icon-btn edit-btn" title="Edit Progress">
+✏
+</button>
+` : ""}
 
-    <button class="icon-btn delete-btn" title="Delete">
-        ✕
-    </button>
+<button class="icon-btn delete-btn" title="Delete">
+✕
+</button>
 
 </div>
 
 <h3>${item.title}</h3>
 
 <div class="badges">
-    <span class="badge">${item.type}</span>
-    <span class="badge">${item.genre}</span>
+<span class="badge">${item.type}</span>
+<span class="badge">${item.genre}</span>
 </div>
 
 ${progressHTML}
 
 <label class="complete">
-    <input
-        type="checkbox"
-        class="completedCheck"
-        ${item.completed ? "checked" : ""}
-    >
-    Completed
-</label>
-`;
 
+<input
+type="checkbox"
+class="completedCheck"
+${item.completed ? "checked" : ""}>
+
+Completed
+
+</label>
+
+</div>
+
+</div>
+`;
     const checkbox = card.querySelector(".completedCheck");
 
-    checkbox.addEventListener("change", async function () {
-
-        await supabaseClient
-            .from("watchlist")
-            .update({
-                completed: this.checked
-            })
-            .eq("id", item.id);
-
-        card.classList.toggle("completed", this.checked);
-
-    });
-
-    const deleteBtn = card.querySelector(".delete-btn");
-
-    deleteBtn.addEventListener("click", async function () {
-
-        if (!confirm(`Delete "${item.title}"?`))
-            return;
-
-        await supabaseClient
-            .from("watchlist")
-            .delete()
-            .eq("id", item.id);
-
-        loadWatchlist();
-
-    });
-
-    const editBtn = card.querySelector(".edit-btn");
-
-    if (editBtn) {
-
-        editBtn.addEventListener("click", async function () {
-
-            const modal = document.getElementById("progressModal");
-const modalSeason = document.getElementById("modalSeason");
-const modalEpisode = document.getElementById("modalEpisode");
-const saveModal = document.getElementById("saveModal");
-const cancelModal = document.getElementById("cancelModal");
-
-modalSeason.value = item.season;
-modalEpisode.value = item.episode;
-
-modal.classList.add("show");
-
-cancelModal.onclick = () => {
-    modal.classList.remove("show");
-};
-
-saveModal.onclick = async () => {
+checkbox.addEventListener("change", async function () {
 
     await supabaseClient
         .from("watchlist")
         .update({
-            season: Number(modalSeason.value),
-            episode: Number(modalEpisode.value)
+            completed: this.checked
         })
         .eq("id", item.id);
 
-    modal.classList.remove("show");
+    card.classList.toggle("completed", this.checked);
+
+});
+
+const deleteBtn = card.querySelector(".delete-btn");
+
+deleteBtn.addEventListener("click", async function () {
+
+    if (!confirm(`Delete "${item.title}"?`))
+        return;
+
+    await supabaseClient
+        .from("watchlist")
+        .delete()
+        .eq("id", item.id);
 
     loadWatchlist();
 
-};
+});
 
-        });
+const editBtn = card.querySelector(".edit-btn");
 
-    }
+if (editBtn) {
 
-    watchlist.appendChild(card);
+    editBtn.addEventListener("click", async function () {
+
+        const modal = document.getElementById("progressModal");
+        const modalSeason = document.getElementById("modalSeason");
+        const modalEpisode = document.getElementById("modalEpisode");
+        const saveModal = document.getElementById("saveModal");
+        const cancelModal = document.getElementById("cancelModal");
+
+        modalSeason.value = item.season;
+        modalEpisode.value = item.episode;
+
+        modal.classList.add("show");
+
+        cancelModal.onclick = () => {
+            modal.classList.remove("show");
+        };
+
+        saveModal.onclick = async () => {
+
+            await supabaseClient
+                .from("watchlist")
+                .update({
+                    season: Number(modalSeason.value),
+                    episode: Number(modalEpisode.value)
+                })
+                .eq("id", item.id);
+
+            modal.classList.remove("show");
+
+            loadWatchlist();
+
+        };
+
+    });
 
 }
+
+watchlist.appendChild(card);
+
+}
+
+/* ===========================
+   ADD NEW ITEM
+=========================== */
 
 async function addItem() {
 
@@ -196,8 +291,12 @@ async function addItem() {
         title: title.value.trim(),
         genre: genre.value,
         type: type.value,
-        season: type.value === "Movie" ? null : Number(season.value),
-        episode: type.value === "Movie" ? null : Number(episode.value),
+        season: type.value === "Movie"
+            ? null
+            : Number(season.value),
+        episode: type.value === "Movie"
+            ? null
+            : Number(episode.value),
         completed: false
     };
 
@@ -216,9 +315,13 @@ async function addItem() {
     episode.value = 1;
 
     loadWatchlist();
+
 }
 
 addBtn.addEventListener("click", addItem);
+/* ===========================
+   SEARCH
+=========================== */
 
 search.addEventListener("input", function () {
 
@@ -241,6 +344,32 @@ search.addEventListener("input", function () {
 
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadWatchlist();
+/* ===========================
+   INITIAL LOAD
+=========================== */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    await loadWatchlist();
+
 });
+
+/* ===========================
+   OPTIONAL: PRELOAD POSTERS
+=========================== */
+
+async function preloadPosters() {
+
+    const { data } = await supabaseClient
+        .from("watchlist")
+        .select("title,type");
+
+    if (!data) return;
+
+    data.forEach(item => {
+        getPoster(item.title, item.type);
+    });
+
+}
+
+preloadPosters();
