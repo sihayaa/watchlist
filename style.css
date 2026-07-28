@@ -372,7 +372,13 @@ MODAL
 
 .modal-row .field{
 
-    flex:1;
+    flex:0 0 calc(50% - 6px);
+
+}
+
+.modal-row input{
+
+    width:100%;
 
 }
 
