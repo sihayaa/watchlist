@@ -417,3 +417,45 @@ MODAL
     background:#292929;
 
 }
+@media (max-width: 768px) {
+
+    body{
+        padding:20px;
+    }
+
+    h1{
+        font-size:32px;
+        text-align:center;
+    }
+
+    .toolbar-row{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .title-field input,
+    .field input,
+    .field select,
+    .search-row input,
+    button{
+        width:100%;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .modal-content{
+        width:90%;
+        max-width:340px;
+    }
+
+    .modal-row{
+        flex-direction:column;
+    }
+
+    .modal-buttons button{
+        flex:1;
+    }
+
+}
