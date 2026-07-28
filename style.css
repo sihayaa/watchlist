@@ -297,9 +297,7 @@ button:hover{
 .complete{
     margin-top:16px;
 }
-/* ===========================
-MODAL
-=========================== */
+
 
 .modal{
     display:none;
@@ -459,9 +457,7 @@ MODAL
     }
 
 }
-/* ===========================
-TMDB POSTERS
-=========================== */
+
 
 .poster-wrapper{
     display:flex;
