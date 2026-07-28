@@ -329,7 +329,7 @@ MODAL
 
 .modal-content{
 
-    width:430px;
+    width:360px;
 
     background:rgba(18,18,18,.95);
 
@@ -337,7 +337,7 @@ MODAL
 
     border-radius:22px;
 
-    padding:28px;
+    padding:20px;
 
     box-shadow:
         0 0 25px rgba(182,108,255,.12),
@@ -364,7 +364,7 @@ MODAL
 
     color:#9AA0A6;
 
-    margin-bottom:24px;
+    margin-bottom:18px;
 
 }
 
@@ -374,7 +374,7 @@ MODAL
 
     gap:16px;
 
-    margin-bottom:28px;
+    margin-bottom:18px;
 
 }
 
