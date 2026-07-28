@@ -10,9 +10,6 @@ const search = document.getElementById("search");
 const seasonField = season.parentElement;
 const episodeField = episode.parentElement;
 
-/* ===========================
-   TMDB SETTINGS
-=========================== */
 
 const TMDB_API_KEY = "7955446551351299457cc0bd52b20050";
 const TMDB_IMAGE = "https://image.tmdb.org/t/p/w500";
@@ -62,10 +59,6 @@ async function getPoster(title, type) {
 
 }
 
-/* ===========================
-   SHOW/HIDE SEASON FIELDS
-=========================== */
-
 function updateFields() {
 
     if (type.value === "Movie") {
@@ -85,9 +78,6 @@ function updateFields() {
 type.addEventListener("change", updateFields);
 updateFields();
 
-/* ===========================
-   LOAD WATCHLIST
-=========================== */
 
 async function loadWatchlist() {
 
@@ -111,9 +101,6 @@ async function loadWatchlist() {
 
 }
 
-/* ===========================
-   RENDER CARD
-=========================== */
 
 async function renderCard(item) {
 
@@ -292,9 +279,6 @@ watchlist.appendChild(card);
 
 }
 
-/* ===========================
-   ADD NEW ITEM
-=========================== */
 
 async function addItem() {
 
@@ -335,9 +319,6 @@ async function addItem() {
 }
 
 addBtn.addEventListener("click", addItem);
-/* ===========================
-   SEARCH
-=========================== */
 
 search.addEventListener("input", function () {
 
@@ -360,19 +341,11 @@ search.addEventListener("input", function () {
 
 });
 
-/* ===========================
-   INITIAL LOAD
-=========================== */
-
 document.addEventListener("DOMContentLoaded", async () => {
 
     await loadWatchlist();
 
 });
-
-/* ===========================
-   OPTIONAL: PRELOAD POSTERS
-=========================== */
 
 async function preloadPosters() {
 
