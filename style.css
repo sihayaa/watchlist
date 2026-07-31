@@ -107,11 +107,11 @@ button:hover{
     box-shadow:0 0 12px rgba(182,108,255,.22);
 }
 
-/* ===== GRID — smaller min column so more square cards fit per row ===== */
+/* ===== GRID — sized for 5 square cards per row on desktop ===== */
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
-    gap:14px;
+    grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+    gap:16px;
 }
 
 .card{
@@ -139,8 +139,8 @@ button:hover{
 
 .card h3{
     color:#B66CFF;
-    font-size:16px;
-    margin-bottom:6px;
+    font-size:20px;
+    margin-bottom:8px;
     text-shadow:0 0 6px rgba(182,108,255,.35);
 }
 
@@ -148,7 +148,7 @@ button:hover{
     display:flex;
     gap:6px;
     flex-wrap:wrap;
-    margin-bottom:8px;
+    margin-bottom:10px;
     justify-content:center;
 }
 
@@ -157,20 +157,20 @@ button:hover{
     color:#B9C0CB;
     border:1px solid #2D2D2D;
     border-radius:999px;
-    padding:3px 9px;
-    font-size:9px;
+    padding:4px 11px;
+    font-size:11px;
     white-space:nowrap;
 }
 
 .progress{
     color:#46C37B;
-    line-height:1.4;
-    margin-bottom:8px;
-    font-size:11px;
+    line-height:1.45;
+    margin-bottom:10px;
+    font-size:12px;
     text-align:center;
     overflow:hidden;
     display:-webkit-box;
-    -webkit-line-clamp:2;
+    -webkit-line-clamp:3;
     -webkit-box-orient:vertical;
 }
 
@@ -237,10 +237,10 @@ button:hover{
 }
 
 
-/* ===== CARD — square, compact, everything clipped/clamped to fit ===== */
+/* ===== CARD — square, everything clipped/clamped to fit ===== */
 .card{
     position:relative;
-    padding:14px 10px 12px;
+    padding:18px 14px 14px;
     aspect-ratio:1/1;
     display:flex;
     flex-direction:column;
@@ -249,23 +249,23 @@ button:hover{
 
 .card-top{
     position:absolute;
-    top:8px;
-    right:8px;
+    top:10px;
+    right:10px;
     display:flex;
     gap:6px;
     z-index:2;
 }
 
 .icon-btn{
-    width:22px !important;
-    height:22px !important;
-    min-width:22px;
+    width:26px !important;
+    height:26px !important;
+    min-width:26px;
     padding:0 !important;
     display:flex;
     align-items:center;
     justify-content:center;
-    border-radius:7px;
-    font-size:11px;
+    border-radius:8px;
+    font-size:12px;
     line-height:1;
     background:#181818;
     border:1px solid #2D2D2D;
@@ -481,18 +481,18 @@ button:hover{
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:8px;
+    gap:10px;
     height:100%;
     min-height:0;
 }
 
 .poster{
-    width:62%;
+    width:56%;
     aspect-ratio:2/3;
     height:auto;
-    max-height:42%;
+    max-height:46%;
     object-fit:cover;
-    border-radius:10px;
+    border-radius:12px;
     flex-shrink:0;
     background:#111;
     border:1px solid rgba(255,255,255,.08);
@@ -513,7 +513,7 @@ button:hover{
 
 .card-content h3{
     padding-right:0;
-    margin-bottom:4px;
+    margin-bottom:6px;
     text-align:center;
     white-space:nowrap;
     overflow:hidden;
@@ -521,7 +521,7 @@ button:hover{
 }
 
 .card-content .badges{
-    margin-bottom:6px;
+    margin-bottom:8px;
 }
 
 .card-content .progress{
