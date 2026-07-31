@@ -92,16 +92,6 @@ function getPoster(item) {
 
 }
 
-    } catch (err) {
-
-        console.error("TMDB Error:", err);
-
-    }
-
-    return "https://placehold.co/300x450?text=No+Poster";
-
-}
-
 function updateFields() {
 
     if (type.value === "Movie") {
