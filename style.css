@@ -9,9 +9,7 @@
 
 body{
     background:
-        linear-gradient(rgba(9,9,9,.6), rgba(9,9,9,.8)),
-        radial-gradient(circle at top, rgba(182,108,255,.08), transparent 30%),
-        radial-gradient(circle at bottom right, rgba(63,175,106,.05), transparent 40%),
+        linear-gradient(rgba(9,9,9,.4), rgba(9,9,9,.6)),
         url('https://raw.githubusercontent.com/sihayaa/watchlist/refs/heads/main/bg.png');
     background-size:cover;
     background-position:center;
@@ -643,44 +641,6 @@ input[type="number"]{
 body{
     position:relative;
     overflow-x:hidden;
-}
-
-body::before,
-body::after{
-    content:"";
-    position:fixed;
-    border-radius:50%;
-    filter:blur(90px);
-    pointer-events:none;
-    z-index:0;
-}
-
-body::before{
-    width:420px;
-    height:420px;
-    top:-120px;
-    left:-100px;
-    background:rgba(182,108,255,.16);
-    animation:floatBlobA 20s ease-in-out infinite;
-}
-
-body::after{
-    width:380px;
-    height:380px;
-    bottom:-140px;
-    right:-100px;
-    background:rgba(63,175,106,.13);
-    animation:floatBlobB 24s ease-in-out infinite;
-}
-
-@keyframes floatBlobA{
-    0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(50px,40px) scale(1.12); }
-}
-
-@keyframes floatBlobB{
-    0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(-45px,-35px) scale(1.15); }
 }
 
 .container{
