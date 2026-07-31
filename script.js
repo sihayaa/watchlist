@@ -77,6 +77,7 @@ const TMDB_IMAGE = "https://image.tmdb.org/t/p/w500";
 const posterCache = {};
 let selectedTMDB = null;
 let searchTimeout = null;
+const searchResults = document.getElementById("searchResults");
 
 async function getPoster(title, type) {
 
@@ -140,9 +141,87 @@ function updateFields() {
 type.addEventListener("change", updateFields);
 updateFields();
 
+async function searchTMDB(query) {
+
+    if (query.length < 2) {
+        searchResults.style.display = "none";
+        searchResults.innerHTML = "";
+        return;
+    }
+
+    const endpoint =
+        type.value === "Movie"
+            ? "movie"
+            : "tv";
+
+    const response = await fetch(
+        `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`
+    );
+
+    const data = await response.json();
+
+    searchResults.innerHTML = "";
+
+    if (!data.results?.length) {
+        searchResults.style.display = "none";
+        return;
+    }
+
+    data.results.slice(0, 5).forEach(movie => {
+
+        const poster = movie.poster_path
+            ? `${TMDB_IMAGE}${movie.poster_path}`
+            : "https://placehold.co/100x150?text=No+Poster";
+
+        const year =
+            (movie.release_date || movie.first_air_date || "")
+            .substring(0, 4);
+
+        const div = document.createElement("div");
+        div.className = "search-item";
+
+        div.innerHTML = `
+            <img src="${poster}">
+            <div>
+                <h4>${movie.title || movie.name}</h4>
+                <p>${year}</p>
+            </div>
+        `;
+
+        div.onclick = () => {
+
+            selectedTMDB = movie;
+
+            title.value = movie.title || movie.name;
+
+            searchResults.style.display = "none";
+
+        };
+
+        searchResults.appendChild(div);
+
+    });
+
+    searchResults.style.display = "block";
+
+}
+
+title.addEventListener("input", () => {
+
+    selectedTMDB = null;
+
+    clearTimeout(searchTimeout);
+
+    searchTimeout = setTimeout(() => {
+
+        searchTMDB(title.value.trim());
+
+    }, 300);
+
+});
 
 async function loadWatchlist() {
-
+    
     watchlist.innerHTML = "";
 
     const { data, error } = await supabaseClient
