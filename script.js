@@ -6,10 +6,13 @@ const episode = document.getElementById("episode");
 const addBtn = document.getElementById("addBtn");
 const watchlist = document.getElementById("watchlist");
 const search = document.getElementById("search");
+const historyBtn = document.getElementById("historyBtn");
+const pageTitle = document.getElementById("pageTitle");
 
 const seasonField = season.parentElement;
 const episodeField = episode.parentElement;
 
+let showingHistory = false;
 
 const TMDB_API_KEY = "7955446551351299457cc0bd52b20050";
 const TMDB_IMAGE = "https://image.tmdb.org/t/p/w500";
@@ -86,9 +89,8 @@ async function loadWatchlist() {
     const { data, error } = await supabaseClient
         .from("watchlist")
         .select("*")
-        .order("created_at", {
-            ascending: false
-        });
+        .eq("completed", showingHistory)
+        .order("title", { ascending: true });
 
     if (error) {
 
@@ -198,7 +200,8 @@ checkbox.addEventListener("change", async function () {
         })
         .eq("id", item.id);
 
-    card.classList.toggle("completed", this.checked);
+    // completed items move to History automatically, so re-filter the view
+    loadWatchlist();
 
 });
 
@@ -319,6 +322,20 @@ async function addItem() {
 }
 
 addBtn.addEventListener("click", addItem);
+
+historyBtn.addEventListener("click", () => {
+
+    showingHistory = !showingHistory;
+
+    historyBtn.textContent = showingHistory ? "← Back to Watchlist" : "📜 History";
+
+    if (pageTitle) {
+        pageTitle.textContent = showingHistory ? "📜 History" : "🎬 Our Watchlist";
+    }
+
+    loadWatchlist();
+
+});
 
 search.addEventListener("input", function () {
 
