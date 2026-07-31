@@ -12,9 +12,21 @@
     <div class="toolbar">
         <div class="toolbar-row">
             <div class="field title-field">
-                <label>Title</label>
-                <input id="title" type="text" placeholder="Movie, Anime or TV Series">
-            </div>
+    <label>Title</label>
+
+    <div class="title-search">
+
+        <input
+            id="title"
+            type="text"
+            placeholder="Movie, Anime or TV Series"
+            autocomplete="off">
+
+        <div id="searchResults" class="search-results"></div>
+
+    </div>
+
+</div>
             <div class="field">
                 <label>Genre</label>
                 <select id="genre">
