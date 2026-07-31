@@ -34,6 +34,22 @@ h1{
     color:#B66CFF;
     letter-spacing:.5px;
     text-shadow:0 0 6px rgba(182,108,255,.7),0 0 16px rgba(182,108,255,.35);
+    display:inline-block;
+    cursor:default;
+    transition:transform .35s ease, text-shadow .35s ease, letter-spacing .35s ease;
+    animation:titleBreathe 4s ease-in-out infinite;
+}
+
+@keyframes titleBreathe{
+    0%,100%{ text-shadow:0 0 6px rgba(182,108,255,.7),0 0 16px rgba(182,108,255,.35); }
+    50%{ text-shadow:0 0 10px rgba(182,108,255,.95),0 0 28px rgba(182,108,255,.55); }
+}
+
+h1:hover{
+    transform:scale(1.05) rotate(-1deg);
+    letter-spacing:1.5px;
+    text-shadow:0 0 16px rgba(182,108,255,1),0 0 36px rgba(182,108,255,.75);
+    animation-play-state:paused;
 }
 
 .toolbar{
@@ -133,7 +149,7 @@ button:hover{
     box-shadow:0 0 12px rgba(182,108,255,.22);
 }
 
-
+/* ===== GRID — sized for 5 square cards per row on desktop ===== */
 .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
@@ -268,7 +284,7 @@ button:hover{
 }
 
 
-
+/* ===== CARD — square, everything clipped/clamped to fit ===== */
 .card{
     position:relative;
     padding:18px 14px 14px;
@@ -511,7 +527,7 @@ button:hover{
 }
 
 
-
+/* ===== POSTER — stacked on top of text so the card can stay square ===== */
 .poster-wrapper{
     display:flex;
     flex-direction:column;
@@ -628,7 +644,7 @@ input[type="number"]{
     appearance: textfield;
 }
 
-
+/* ===== ALIVE PASS — ambient background, motion, genre color ===== */
 
 @media (prefers-reduced-motion: reduce){
     *,
@@ -649,7 +665,7 @@ body{
     z-index:1;
 }
 
-
+/* card entrance */
 @keyframes cardFadeIn{
     from{ opacity:0; transform:translateY(16px) scale(.97); }
     to{ opacity:1; transform:translateY(0) scale(1); }
@@ -659,6 +675,7 @@ body{
     animation:cardFadeIn .5s ease backwards;
 }
 
+/* poster hover glow */
 .poster{
     transition:transform .3s ease, box-shadow .3s ease;
 }
@@ -670,7 +687,7 @@ body{
         0 0 18px rgba(182,108,255,.3);
 }
 
-
+/* completion pulse before a card leaves the list */
 @keyframes completePulse{
     0%{ box-shadow:0 0 0 rgba(63,175,106,0); }
     35%{ box-shadow:0 0 32px rgba(63,175,106,.6); transform:translateY(-2px); }
@@ -681,7 +698,7 @@ body{
     animation:completePulse .55s ease;
 }
 
-
+/* genre-colored badges — type badge stays neutral, second badge gets a hue */
 .badge-genre-action{ color:#FF8080; border-color:rgba(255,128,128,.4); }
 .badge-genre-adventure{ color:#FFB86B; border-color:rgba(255,184,107,.4); }
 .badge-genre-animation{ color:#6BCBFF; border-color:rgba(107,203,255,.4); }
@@ -694,3 +711,45 @@ body{
 .badge-genre-romance{ color:#FF7FB0; border-color:rgba(255,127,176,.4); }
 .badge-genre-sci-fi{ color:#5FE39A; border-color:rgba(95,227,154,.4); }
 .badge-genre-thriller{ color:#FFB454; border-color:rgba(255,180,84,.4); }
+
+/* ===== fireflies drifting over the page ===== */
+.firefly{
+    position:fixed;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,244,150,.95), rgba(255,244,150,0) 70%);
+    pointer-events:none;
+    z-index:0;
+    filter:blur(.5px);
+}
+
+@keyframes fireflyFloat{
+    0%,100%{ transform:translate(0,0); }
+    25%{ transform:translate(14px,-26px); }
+    50%{ transform:translate(-12px,-46px); }
+    75%{ transform:translate(-22px,-16px); }
+}
+
+@keyframes fireflyFlicker{
+    0%,100%{ opacity:.12; }
+    50%{ opacity:.85; }
+}
+
+/* ===== completion celebration burst ===== */
+.complete{
+    position:relative;
+}
+
+.confetti-piece{
+    position:absolute;
+    left:50%;
+    top:50%;
+    font-size:14px;
+    pointer-events:none;
+    z-index:5;
+    animation:confettiPop .85s ease-out forwards;
+}
+
+@keyframes confettiPop{
+    0%{ transform:translate(-50%,-50%) scale(.5); opacity:1; }
+    100%{ transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1); opacity:0; }
+}
