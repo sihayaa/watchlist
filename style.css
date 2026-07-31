@@ -53,6 +53,9 @@ h1:hover{
 }
 
 .toolbar{
+    position:relative;
+    z-index:1000;
+
     background:rgba(18,18,18,.75);
     backdrop-filter:blur(14px);
     -webkit-backdrop-filter:blur(14px);
@@ -755,25 +758,31 @@ body{
 }
 .title-search{
     position:relative;
+    z-index:1001;
 }
 
 .search-results{
     position:absolute;
-    top:100%;
+    top:calc(100% + 8px);
     left:0;
     right:0;
-    margin-top:6px;
-
-    background:rgba(18,18,18,.98);
-    border:1px solid rgba(182,108,255,.25);
-    border-radius:14px;
-
-    max-height:320px;
-    overflow-y:auto;
 
     display:none;
 
-    z-index:999;
+    max-height:340px;
+    overflow-y:auto;
+
+    background:rgba(15,15,15,.98);
+    backdrop-filter:blur(12px);
+
+    border:1px solid rgba(182,108,255,.3);
+    border-radius:16px;
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.45),
+        0 0 16px rgba(182,108,255,.15);
+
+    z-index:99999;
 }
 
 .search-item{
