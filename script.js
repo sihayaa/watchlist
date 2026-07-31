@@ -99,17 +99,23 @@ async function loadWatchlist() {
 
     }
 
-    data.forEach(renderCard);
+    data.forEach((item, index) => renderCard(item, index));
 
 }
 
 
-async function renderCard(item) {
+function genreClass(genre) {
+    return `badge-genre-${genre.toLowerCase().replace(/\s+/g, "-")}`;
+}
+
+
+async function renderCard(item, index) {
 
     const poster = await getPoster(item.title, item.type);
 
     const card = document.createElement("div");
     card.className = "card";
+    card.style.animationDelay = `${Math.min(index, 12) * 60}ms`;
 
     if (item.completed) {
         card.classList.add("completed");
@@ -169,7 +175,7 @@ ${item.type !== "Movie" ? `
 
 <div class="badges">
 <span class="badge">${item.type}</span>
-<span class="badge">${item.genre}</span>
+<span class="badge ${genreClass(item.genre)}">${item.genre}</span>
 </div>
 
 ${progressHTML}
@@ -200,8 +206,12 @@ checkbox.addEventListener("change", async function () {
         })
         .eq("id", item.id);
 
-    // completed items move to History automatically, so re-filter the view
-    loadWatchlist();
+    // let the pulse animation play before the card leaves this view
+    card.classList.add("completing");
+
+    setTimeout(() => {
+        loadWatchlist();
+    }, 500);
 
 });
 
