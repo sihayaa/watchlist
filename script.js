@@ -1,3 +1,60 @@
+function spawnConfetti(container) {
+
+    if (!container) return;
+
+    const emojis = ["✨", "🌟", "💫", "🎉"];
+
+    for (let i = 0; i < 8; i++) {
+
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 26 + Math.random() * 26;
+
+        piece.style.setProperty("--dx", `${Math.cos(angle) * dist}px`);
+        piece.style.setProperty("--dy", `${Math.sin(angle) * dist - 12}px`);
+        piece.style.animationDelay = `${Math.random() * 80}ms`;
+
+        container.appendChild(piece);
+
+        setTimeout(() => piece.remove(), 950);
+
+    }
+
+}
+
+
+function spawnFireflies(count = 18) {
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    for (let i = 0; i < count; i++) {
+
+        const fly = document.createElement("div");
+        fly.className = "firefly";
+
+        const size = 3 + Math.random() * 4;
+        const duration = 6 + Math.random() * 8;
+        const flicker = 2 + Math.random() * 3;
+
+        fly.style.width = `${size}px`;
+        fly.style.height = `${size}px`;
+        fly.style.top = `${Math.random() * 100}vh`;
+        fly.style.left = `${Math.random() * 100}vw`;
+        fly.style.animation = `fireflyFloat ${duration}s ease-in-out infinite, fireflyFlicker ${flicker}s ease-in-out infinite`;
+        fly.style.animationDelay = `${-Math.random() * duration}s, ${-Math.random() * flicker}s`;
+
+        document.body.appendChild(fly);
+
+    }
+
+}
+
+spawnFireflies();
+
+
 const type = document.getElementById("type");
 const title = document.getElementById("title");
 const genre = document.getElementById("genre");
@@ -206,7 +263,11 @@ checkbox.addEventListener("change", async function () {
         })
         .eq("id", item.id);
 
-    // let the pulse animation play before the card leaves this view
+    if (this.checked) {
+        spawnConfetti(this.closest(".complete"));
+    }
+
+ 
     card.classList.add("completing");
 
     setTimeout(() => {
