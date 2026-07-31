@@ -128,7 +128,6 @@ button:hover{
     box-shadow:0 0 12px rgba(182,108,255,.22);
 }
 
-/* ===== GRID — sized for 5 square cards per row on desktop ===== */
 .grid{
     display:grid;
     grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
@@ -263,7 +262,6 @@ button:hover{
 }
 
 
-/* ===== CARD — square, everything clipped/clamped to fit ===== */
 .card{
     position:relative;
     padding:18px 14px 14px;
@@ -502,7 +500,6 @@ button:hover{
 }
 
 
-/* ===== POSTER — stacked on top of text so the card can stay square ===== */
 .poster-wrapper{
     display:flex;
     flex-direction:column;
@@ -618,3 +615,105 @@ input[type="number"]{
     -moz-appearance: textfield;
     appearance: textfield;
 }
+
+
+@media (prefers-reduced-motion: reduce){
+    *,
+    *::before,
+    *::after{
+        animation:none !important;
+        transition:none !important;
+    }
+}
+
+body{
+    position:relative;
+    overflow-x:hidden;
+}
+
+body::before,
+body::after{
+    content:"";
+    position:fixed;
+    border-radius:50%;
+    filter:blur(90px);
+    pointer-events:none;
+    z-index:0;
+}
+
+body::before{
+    width:420px;
+    height:420px;
+    top:-120px;
+    left:-100px;
+    background:rgba(182,108,255,.16);
+    animation:floatBlobA 20s ease-in-out infinite;
+}
+
+body::after{
+    width:380px;
+    height:380px;
+    bottom:-140px;
+    right:-100px;
+    background:rgba(63,175,106,.13);
+    animation:floatBlobB 24s ease-in-out infinite;
+}
+
+@keyframes floatBlobA{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(50px,40px) scale(1.12); }
+}
+
+@keyframes floatBlobB{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(-45px,-35px) scale(1.15); }
+}
+
+.container{
+    position:relative;
+    z-index:1;
+}
+
+@keyframes cardFadeIn{
+    from{ opacity:0; transform:translateY(16px) scale(.97); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+}
+
+.card{
+    animation:cardFadeIn .5s ease backwards;
+}
+
+
+.poster{
+    transition:transform .3s ease, box-shadow .3s ease;
+}
+
+.card:hover .poster{
+    transform:scale(1.05);
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.5),
+        0 0 18px rgba(182,108,255,.3);
+}
+
+@keyframes completePulse{
+    0%{ box-shadow:0 0 0 rgba(63,175,106,0); }
+    35%{ box-shadow:0 0 32px rgba(63,175,106,.6); transform:translateY(-2px); }
+    100%{ box-shadow:0 0 18px rgba(63,175,106,.16); transform:translateY(0); }
+}
+
+.card.completing{
+    animation:completePulse .55s ease;
+}
+
+.badge-genre-action{ color:#FF8080; border-color:rgba(255,128,128,.4); }
+.badge-genre-adventure{ color:#FFB86B; border-color:rgba(255,184,107,.4); }
+.badge-genre-animation{ color:#6BCBFF; border-color:rgba(107,203,255,.4); }
+.badge-genre-comedy{ color:#FFD86B; border-color:rgba(255,216,107,.4); }
+.badge-genre-crime{ color:#9AA0FF; border-color:rgba(154,160,255,.4); }
+.badge-genre-drama{ color:#FF8FB1; border-color:rgba(255,143,177,.4); }
+.badge-genre-fantasy{ color:#CFAAFF; border-color:rgba(182,108,255,.4); }
+.badge-genre-horror{ color:#FF5C5C; border-color:rgba(255,92,92,.4); }
+.badge-genre-mystery{ color:#9AA0FF; border-color:rgba(154,160,255,.4); }
+.badge-genre-romance{ color:#FF7FB0; border-color:rgba(255,127,176,.4); }
+.badge-genre-sci-fi{ color:#5FE39A; border-color:rgba(95,227,154,.4); }
+.badge-genre-thriller{ color:#FFB454; border-color:rgba(255,180,84,.4); }
