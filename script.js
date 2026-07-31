@@ -75,39 +75,22 @@ const TMDB_API_KEY = "7955446551351299457cc0bd52b20050";
 const TMDB_IMAGE = "https://image.tmdb.org/t/p/w500";
 
 const posterCache = {};
+let selectedTMDB = null;
+let searchTimeout = null;
 
-async function getPoster(title, type) {
+function getPoster(item) {
 
-    const cacheKey = `${type}_${title}`;
-
-    if (posterCache[cacheKey]) {
-        return posterCache[cacheKey];
+    if (item.poster_path) {
+        return item.poster_path;
     }
 
-    const endpoint =
-        type === "Movie"
-            ? "movie"
-            : "tv";
+    if (item.poster) {
+        return item.poster;
+    }
 
-    try {
+    return "https://placehold.co/300x450?text=No+Poster";
 
-        const response = await fetch(
-            `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`
-        );
-
-        const data = await response.json();
-
-        if (data.results && data.results.length > 0) {
-
-            const poster = data.results[0].poster_path
-                ? `${TMDB_IMAGE}${data.results[0].poster_path}`
-                : "https://placehold.co/300x450?text=No+Poster";
-
-            posterCache[cacheKey] = poster;
-
-            return poster;
-
-        }
+}
 
     } catch (err) {
 
@@ -168,7 +151,7 @@ function genreClass(genre) {
 
 async function renderCard(item, index) {
 
-    const poster = await getPoster(item.title, item.type);
+    const poster = getPoster(item);
 
     const card = document.createElement("div");
     card.className = "card";
