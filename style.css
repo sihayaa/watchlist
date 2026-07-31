@@ -49,7 +49,13 @@ h1{
     flex-wrap:wrap;
 }
 
-.search-row{margin-top:18px;}
+.search-row{
+    margin-top:18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+}
 
 .field{
     display:flex;
@@ -87,7 +93,22 @@ h1{
 .title-field input{width:360px;}
 .field select{width:160px;}
 .progress-field input{width:90px;}
-.search-row input{width:360px;caret-color:#3FA56A;}
+.search-row input{flex:1;max-width:360px;caret-color:#3FA56A;}
+
+.history-btn{
+    background:#1D1D1D;
+    border:1px solid rgba(182,108,255,.35);
+    color:#D8BFFF;
+    white-space:nowrap;
+    flex-shrink:0;
+}
+
+.history-btn:hover{
+    background:#292929;
+    border-color:#A768FF;
+    box-shadow:0 0 12px rgba(182,108,255,.22);
+    transform:translateY(-2px);
+}
 
 button{
     background:#A768FF;
@@ -231,6 +252,11 @@ button:hover{
     }
 
     .card-actions{
+        flex-direction:column;
+        align-items:stretch;
+    }
+
+    .search-row{
         flex-direction:column;
         align-items:stretch;
     }
@@ -508,7 +534,6 @@ button:hover{
     min-height:0;
     display:flex;
     flex-direction:column;
-    overflow:hidden;
 }
 
 .card-content h3{
