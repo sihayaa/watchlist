@@ -107,10 +107,11 @@ button:hover{
     box-shadow:0 0 12px rgba(182,108,255,.22);
 }
 
+/* ===== GRID — smaller min column so more square cards fit per row ===== */
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));
-    gap:16px;
+    grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));
+    gap:14px;
 }
 
 .card{
@@ -138,16 +139,17 @@ button:hover{
 
 .card h3{
     color:#B66CFF;
-    font-size:26px;
-    margin-bottom:12px;
+    font-size:16px;
+    margin-bottom:6px;
     text-shadow:0 0 6px rgba(182,108,255,.35);
 }
 
 .badges{
     display:flex;
-    gap:8px;
+    gap:6px;
     flex-wrap:wrap;
-    margin-bottom:14px;
+    margin-bottom:8px;
+    justify-content:center;
 }
 
 .badge{
@@ -155,14 +157,21 @@ button:hover{
     color:#B9C0CB;
     border:1px solid #2D2D2D;
     border-radius:999px;
-    padding:5px 12px;
-    font-size:11px;
+    padding:3px 9px;
+    font-size:9px;
+    white-space:nowrap;
 }
 
 .progress{
     color:#46C37B;
-    line-height:1.7;
-    margin-bottom:16px;
+    line-height:1.4;
+    margin-bottom:8px;
+    font-size:11px;
+    text-align:center;
+    overflow:hidden;
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
 }
 
 .card-actions{
@@ -198,10 +207,12 @@ button:hover{
 .complete{
     display:inline-flex;
     align-items:center;
-    gap:8px;
+    justify-content:center;
+    gap:6px;
     color:#3FA56A;
-    font-size:13px;
+    font-size:11px;
     white-space:nowrap;
+    width:100%;
 }
 
 @media(max-width:900px){
@@ -226,30 +237,35 @@ button:hover{
 }
 
 
-
+/* ===== CARD — square, compact, everything clipped/clamped to fit ===== */
 .card{
     position:relative;
-    padding-top:52px;
+    padding:14px 10px 12px;
+    aspect-ratio:1/1;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
 }
 
 .card-top{
     position:absolute;
-    top:14px;
-    right:14px;
+    top:8px;
+    right:8px;
     display:flex;
-    gap:8px;
+    gap:6px;
+    z-index:2;
 }
 
 .icon-btn{
-    width:30px !important;
-    height:30px !important;
-    min-width:30px;
+    width:22px !important;
+    height:22px !important;
+    min-width:22px;
     padding:0 !important;
     display:flex;
     align-items:center;
     justify-content:center;
-    border-radius:8px;
-    font-size:14px;
+    border-radius:7px;
+    font-size:11px;
     line-height:1;
     background:#181818;
     border:1px solid #2D2D2D;
@@ -287,7 +303,7 @@ button:hover{
 }
 
 .card h3{
-    padding-right:76px;
+    padding-right:0;
 }
 
 .card-actions{
@@ -295,7 +311,8 @@ button:hover{
 }
 
 .complete{
-    margin-top:16px;
+    margin-top:auto;
+    padding-top:8px;
 }
 
 
@@ -440,7 +457,7 @@ button:hover{
     }
 
     .grid{
-        grid-template-columns:1fr;
+        grid-template-columns:repeat(auto-fill, minmax(130px, 1fr));
     }
 
     .modal-content{
@@ -459,17 +476,23 @@ button:hover{
 }
 
 
+/* ===== POSTER — stacked on top of text so the card can stay square ===== */
 .poster-wrapper{
     display:flex;
-    gap:16px;
-    align-items:flex-start;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    height:100%;
+    min-height:0;
 }
 
 .poster{
-    width:110px;
-    height:165px;
+    width:62%;
+    aspect-ratio:2/3;
+    height:auto;
+    max-height:42%;
     object-fit:cover;
-    border-radius:14px;
+    border-radius:10px;
     flex-shrink:0;
     background:#111;
     border:1px solid rgba(255,255,255,.08);
@@ -480,32 +503,42 @@ button:hover{
 
 .card-content{
     flex:1;
+    width:100%;
     min-width:0;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
 }
 
 .card-content h3{
-    padding-right:76px;
-    margin-bottom:12px;
+    padding-right:0;
+    margin-bottom:4px;
+    text-align:center;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .card-content .badges{
-    margin-bottom:14px;
+    margin-bottom:6px;
 }
 
 .card-content .progress{
-    margin-bottom:16px;
+    margin-bottom:0;
 }
 
 @media(max-width:650px){
 
-    .poster-wrapper{
-        flex-direction:column;
-        align-items:center;
+    .card{
+        aspect-ratio:auto;
     }
 
     .poster{
-        width:160px;
-        height:240px;
+        width:100%;
+        max-width:160px;
+        max-height:none;
+        aspect-ratio:2/3;
     }
 
     .card-content{
