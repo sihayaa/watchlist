@@ -753,3 +753,60 @@ body{
     0%{ transform:translate(-50%,-50%) scale(.5); opacity:1; }
     100%{ transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1); opacity:0; }
 }
+.title-search{
+    position:relative;
+}
+
+.search-results{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    margin-top:6px;
+
+    background:rgba(18,18,18,.98);
+    border:1px solid rgba(182,108,255,.25);
+    border-radius:14px;
+
+    max-height:320px;
+    overflow-y:auto;
+
+    display:none;
+
+    z-index:999;
+}
+
+.search-item{
+    display:flex;
+    gap:12px;
+    align-items:center;
+
+    padding:10px;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.search-item:hover{
+    background:rgba(182,108,255,.12);
+}
+
+.search-item img{
+    width:48px;
+    height:72px;
+    object-fit:cover;
+    border-radius:8px;
+}
+
+.search-item h4{
+    margin:0;
+    color:white;
+    font-size:14px;
+}
+
+.search-item p{
+    margin-top:4px;
+    color:#9A9A9A;
+    font-size:12px;
+}
