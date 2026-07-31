@@ -4,25 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Watchlist</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
 <div class="container">
-
-    <h1>🎬 Our Watchlist</h1>
-
+    <h1 id="pageTitle">🎬 Our Watchlist</h1>
     <div class="toolbar">
-
         <div class="toolbar-row">
-
             <div class="field title-field">
                 <label>Title</label>
                 <input id="title" type="text" placeholder="Movie, Anime or TV Series">
             </div>
-
             <div class="field">
                 <label>Genre</label>
                 <select id="genre">
@@ -40,7 +32,6 @@
                     <option>Thriller</option>
                 </select>
             </div>
-
             <div class="field">
                 <label>Type</label>
                 <select id="type">
@@ -49,99 +40,65 @@
                     <option>Anime</option>
                 </select>
             </div>
-
             <div class="field progress-field">
                 <label>Season</label>
                 <input id="season" type="number" min="1" step="1" value="1" inputmode="numeric">
             </div>
-
             <div class="field progress-field">
                 <label>Episode</label>
                 <input id="episode" type="number" min="1" step="1" value="1" inputmode="numeric">
             </div>
-
             <button id="addBtn">+ Add</button>
-
         </div>
-
         <div class="search-row">
             <input id="search" type="text" placeholder="🔍 Search titles...">
+            <button id="historyBtn" class="history-btn" type="button">📜 History</button>
         </div>
-
     </div>
-
     <div id="watchlist" class="grid"></div>
-
 </div>
-
-
 <div id="progressModal" class="modal">
-
     <div class="modal-content">
-
         <h2>🎬 Update Progress</h2>
-
         <p>Where are we now?</p>
-
         <div class="modal-row">
-
             <div class="field">
                 <label>Season</label>
                 <input id="modalSeason" type="number" min="1">
             </div>
-
             <div class="field">
                 <label>Episode</label>
                 <input id="modalEpisode" type="number" min="1">
             </div>
-
         </div>
-
         <div class="modal-buttons">
-
             <button id="cancelModal" class="secondary-btn">
                 Cancel
             </button>
-
             <button id="saveModal">
                 Save
             </button>
-
         </div>
-
     </div>
-
 </div>
-
 <div id="deleteModal" class="modal">
-
     <div class="modal-content">
-
         <h2>🗑 Delete Item</h2>
-
         <p id="deleteText">
             Are you sure?
         </p>
-
         <div class="modal-buttons">
-
             <button id="deleteNo" class="secondary-btn">
                 No
             </button>
-
             <button id="deleteYes">
                 Yes
             </button>
-
         </div>
-
     </div>
-
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 <script src="script.js"></script>
-
 </body>
 </html>
