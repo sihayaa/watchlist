@@ -255,8 +255,7 @@ async function searchTMDB(query) {
         return;
     }
 
-    // Uses /search/multi so it searches movies AND tv/anime in one call,
-    // regardless of what the Type dropdown is currently set to.
+
     const response = await fetch(
         `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`
     );
@@ -265,7 +264,7 @@ async function searchTMDB(query) {
 
     searchResults.innerHTML = "";
 
-    // /search/multi also returns "person" results (actors, directors) — filter those out
+
     const results = (data.results || []).filter(
         r => r.media_type === "movie" || r.media_type === "tv"
     );
@@ -304,11 +303,18 @@ async function searchTMDB(query) {
 
             title.value = item.title || item.name;
 
-            // Auto-sync the Type dropdown to match what was picked.
-            // NOTE: double-check "Series" matches the exact non-Movie
-            // option value in your <select id="type"> — adjust if it's
-            // named something else (e.g. "TV Show", "Show").
-            type.value = item.media_type === "movie" ? "Movie" : "Series";
+ 
+            if (item.media_type === "movie") {
+                type.value = "Movie";
+            } else {
+                
+                const isAnime =
+                    (item.genre_ids && item.genre_ids.includes(16)) ||
+                    item.original_language === "ja";
+
+                type.value = isAnime ? "Anime" : "Series";
+            }
+
             updateFields();
 
             searchResults.style.display = "none";
@@ -354,10 +360,7 @@ async function loadWatchlist() {
 
     }
 
-    // Build all cards in parallel (each still awaits its own poster fetch),
-    // but wait for ALL of them before appending — otherwise whichever
-    // poster loads fastest gets appended first, breaking the alphabetical
-    // order the query already returned.
+  
     const cards = await Promise.all(
         data.map((item, index) => renderCard(item, index))
     );
