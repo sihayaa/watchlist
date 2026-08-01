@@ -381,6 +381,27 @@ title.addEventListener("input", () => {
 
 });
 
+// Auto-format "Left off at" as digits are typed — no need to type colons.
+// e.g. typing 1 2 3 4 5 becomes 1:23:45 (rightmost 2 digits = seconds,
+// next 2 = minutes, remaining = hours).
+const modalLeftOffInput = document.getElementById("modalLeftOff");
+
+modalLeftOffInput.addEventListener("input", function () {
+
+    const digits = this.value.replace(/\D/g, "").slice(-6);
+
+    const secs = digits.slice(-2);
+    const mins = digits.length > 2 ? digits.slice(-4, -2) : "";
+    const hours = digits.length > 4 ? digits.slice(0, -4) : "";
+
+    let formatted = secs;
+    if (mins) formatted = `${mins}:${formatted}`;
+    if (hours) formatted = `${hours}:${formatted}`;
+
+    this.value = formatted;
+
+});
+
 async function loadWatchlist() {
     
     watchlist.innerHTML = "";
