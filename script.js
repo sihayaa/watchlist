@@ -149,33 +149,37 @@ async function searchTMDB(query) {
         return;
     }
 
-    const endpoint =
-        type.value === "Movie"
-            ? "movie"
-            : "tv";
-
+    // Uses /search/multi so it searches movies AND tv/anime in one call,
+    // regardless of what the Type dropdown is currently set to.
     const response = await fetch(
-        `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`
+        `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`
     );
 
     const data = await response.json();
 
     searchResults.innerHTML = "";
 
-    if (!data.results?.length) {
+    // /search/multi also returns "person" results (actors, directors) — filter those out
+    const results = (data.results || []).filter(
+        r => r.media_type === "movie" || r.media_type === "tv"
+    );
+
+    if (!results.length) {
         searchResults.style.display = "none";
         return;
     }
 
-    data.results.slice(0, 5).forEach(movie => {
+    results.slice(0, 15).forEach(item => {
 
-        const poster = movie.poster_path
-            ? `${TMDB_IMAGE}${movie.poster_path}`
+        const poster = item.poster_path
+            ? `${TMDB_IMAGE}${item.poster_path}`
             : "https://placehold.co/100x150?text=No+Poster";
 
         const year =
-            (movie.release_date || movie.first_air_date || "")
+            (item.release_date || item.first_air_date || "")
             .substring(0, 4);
+
+        const mediaLabel = item.media_type === "movie" ? "Movie" : "TV/Anime";
 
         const div = document.createElement("div");
         div.className = "search-item";
@@ -183,16 +187,23 @@ async function searchTMDB(query) {
         div.innerHTML = `
             <img src="${poster}">
             <div>
-                <h4>${movie.title || movie.name}</h4>
-                <p>${year}</p>
+                <h4>${item.title || item.name}</h4>
+                <p>${year} · ${mediaLabel}</p>
             </div>
         `;
 
         div.onclick = () => {
 
-            selectedTMDB = movie;
+            selectedTMDB = item;
 
-            title.value = movie.title || movie.name;
+            title.value = item.title || item.name;
+
+            // Auto-sync the Type dropdown to match what was picked.
+            // NOTE: double-check "Series" matches the exact non-Movie
+            // option value in your <select id="type"> — adjust if it's
+            // named something else (e.g. "TV Show", "Show").
+            type.value = item.media_type === "movie" ? "Movie" : "Series";
+            updateFields();
 
             searchResults.style.display = "none";
 
