@@ -248,7 +248,15 @@ async function loadWatchlist() {
 
     }
 
-    data.forEach((item, index) => renderCard(item, index));
+    // Build all cards in parallel (each still awaits its own poster fetch),
+    // but wait for ALL of them before appending — otherwise whichever
+    // poster loads fastest gets appended first, breaking the alphabetical
+    // order the query already returned.
+    const cards = await Promise.all(
+        data.map((item, index) => renderCard(item, index))
+    );
+
+    cards.forEach(card => watchlist.appendChild(card));
 
 }
 
@@ -441,7 +449,7 @@ if (editBtn) {
 
 }
 
-watchlist.appendChild(card);
+return card;
 
 }
 
