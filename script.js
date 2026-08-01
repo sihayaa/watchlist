@@ -149,6 +149,38 @@ async function getTMDBDetails(title, type) {
 
             const result = data.results[0];
 
+            // The search endpoint doesn't return runtime — a second call
+            // to the full detail endpoint is needed to get it.
+            let runtime = null;
+
+            try {
+
+                const detailResponse = await fetch(
+                    `https://api.themoviedb.org/3/${endpoint}/${result.id}?api_key=${TMDB_API_KEY}`
+                );
+
+                const detailData = await detailResponse.json();
+
+                if (type === "Movie") {
+
+                    if (detailData.runtime) {
+                        runtime = `${detailData.runtime} min`;
+                    }
+
+                } else {
+
+                    if (detailData.episode_run_time && detailData.episode_run_time.length > 0) {
+                        runtime = `${detailData.episode_run_time[0]} min/ep`;
+                    }
+
+                }
+
+            } catch (err) {
+
+                console.error("TMDB Runtime Error:", err);
+
+            }
+
             const details = {
                 poster: result.poster_path
                     ? `${TMDB_IMAGE}${result.poster_path}`
@@ -160,7 +192,8 @@ async function getTMDBDetails(title, type) {
                 rating: result.vote_average
                     ? result.vote_average.toFixed(1)
                     : null,
-                year: (result.release_date || result.first_air_date || "").substring(0, 4)
+                year: (result.release_date || result.first_air_date || "").substring(0, 4),
+                runtime: runtime
             };
 
             detailsCache[cacheKey] = details;
@@ -180,7 +213,8 @@ async function getTMDBDetails(title, type) {
         backdrop: null,
         overview: "No description available.",
         rating: null,
-        year: ""
+        year: "",
+        runtime: null
     };
 
 }
@@ -213,7 +247,8 @@ async function openDetailsModal(item) {
 
     metaEl.textContent = [
         details.year,
-        details.rating ? `⭐ ${details.rating}` : null
+        details.rating ? `⭐ ${details.rating}` : null,
+        details.runtime
     ].filter(Boolean).join(" · ");
 
 }
@@ -255,7 +290,8 @@ async function searchTMDB(query) {
         return;
     }
 
-
+    // Uses /search/multi so it searches movies AND tv/anime in one call,
+    // regardless of what the Type dropdown is currently set to.
     const response = await fetch(
         `https://api.themoviedb.org/3/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`
     );
@@ -264,7 +300,7 @@ async function searchTMDB(query) {
 
     searchResults.innerHTML = "";
 
-
+    // /search/multi also returns "person" results (actors, directors) — filter those out
     const results = (data.results || []).filter(
         r => r.media_type === "movie" || r.media_type === "tv"
     );
@@ -303,11 +339,13 @@ async function searchTMDB(query) {
 
             title.value = item.title || item.name;
 
- 
+            // Auto-sync the Type dropdown to match what was picked.
             if (item.media_type === "movie") {
                 type.value = "Movie";
             } else {
-                
+                // TMDB doesn't have a dedicated "anime" media type — a TV
+                // result counts as anime here if it's tagged Animation (genre id 16)
+                // or its original language is Japanese.
                 const isAnime =
                     (item.genre_ids && item.genre_ids.includes(16)) ||
                     item.original_language === "ja";
@@ -360,7 +398,10 @@ async function loadWatchlist() {
 
     }
 
-  
+    // Build all cards in parallel (each still awaits its own poster fetch),
+    // but wait for ALL of them before appending — otherwise whichever
+    // poster loads fastest gets appended first, breaking the alphabetical
+    // order the query already returned.
     const cards = await Promise.all(
         data.map((item, index) => renderCard(item, index))
     );
@@ -393,7 +434,7 @@ async function renderCard(item, index) {
 
         progressHTML = `
             <div class="progress">
-                🎬 Movie
+                ${item.left_off ? `⏸ Left off at ${item.left_off}` : "🎬 Movie"}
             </div>
         `;
 
@@ -429,7 +470,11 @@ ${item.type !== "Movie" ? `
 <button class="icon-btn edit-btn" title="Edit Progress">
 ✏
 </button>
-` : ""}
+` : `
+<button class="icon-btn edit-btn" title="Edit Left Off At">
+✏
+</button>
+`}
 
 <button class="icon-btn delete-btn" title="Delete">
 ✕
@@ -524,13 +569,25 @@ if (editBtn) {
     editBtn.addEventListener("click", async function () {
 
         const modal = document.getElementById("progressModal");
+        const seasonEpisodeRow = document.getElementById("modalSeasonEpisodeRow");
+        const leftOffField = document.getElementById("modalLeftOffField");
         const modalSeason = document.getElementById("modalSeason");
         const modalEpisode = document.getElementById("modalEpisode");
+        const modalLeftOff = document.getElementById("modalLeftOff");
         const saveModal = document.getElementById("saveModal");
         const cancelModal = document.getElementById("cancelModal");
 
-        modalSeason.value = item.season;
-        modalEpisode.value = item.episode;
+        const isMovie = item.type === "Movie";
+
+        seasonEpisodeRow.style.display = isMovie ? "none" : "flex";
+        leftOffField.style.display = isMovie ? "flex" : "none";
+
+        if (isMovie) {
+            modalLeftOff.value = item.left_off || "";
+        } else {
+            modalSeason.value = item.season;
+            modalEpisode.value = item.episode;
+        }
 
         modal.classList.add("show");
 
@@ -540,12 +597,16 @@ if (editBtn) {
 
         saveModal.onclick = async () => {
 
-            await supabaseClient
-                .from("watchlist")
-                .update({
+            const update = isMovie
+                ? { left_off: modalLeftOff.value.trim() || null }
+                : {
                     season: Number(modalSeason.value),
                     episode: Number(modalEpisode.value)
-                })
+                };
+
+            await supabaseClient
+                .from("watchlist")
+                .update(update)
                 .eq("id", item.id);
 
             modal.classList.remove("show");
@@ -615,10 +676,10 @@ historyBtn.addEventListener("click", () => {
 
     showingHistory = !showingHistory;
 
-    historyBtn.textContent = showingHistory ? "← Back to Watchlist" : "📜 History";
+    historyBtn.textContent = showingHistory ? "← Back to Watchlist" : "✅ Completed";
 
     if (pageTitle) {
-        pageTitle.textContent = showingHistory ? "📜 History" : "🎬 Our Watchlist";
+        pageTitle.textContent = showingHistory ? "✅ Completed" : "🎬 Our Watchlist";
     }
 
     loadWatchlist();
