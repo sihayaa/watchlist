@@ -59,7 +59,7 @@
         </div>
         <div class="search-row">
             <input id="search" type="text" placeholder="🔍 Search titles...">
-            <button id="historyBtn" class="history-btn" type="button">📜 History</button>
+            <button id="historyBtn" class="history-btn" type="button">✅ Completed</button>
         </div>
     </div>
     <div id="watchlist" class="grid"></div>
@@ -68,7 +68,7 @@
     <div class="modal-content">
         <h2>🎬 Update Progress</h2>
         <p>Where are we now?</p>
-        <div class="modal-row">
+        <div class="modal-row" id="modalSeasonEpisodeRow">
             <div class="field">
                 <label>Season</label>
                 <input id="modalSeason" type="number" min="1">
@@ -77,6 +77,10 @@
                 <label>Episode</label>
                 <input id="modalEpisode" type="number" min="1">
             </div>
+        </div>
+        <div class="field" id="modalLeftOffField">
+            <label>Left off at</label>
+            <input id="modalLeftOff" type="text" placeholder="e.g. 1:23:45">
         </div>
         <div class="modal-buttons">
             <button id="cancelModal" class="secondary-btn">
