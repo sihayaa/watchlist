@@ -13,19 +13,14 @@
         <div class="toolbar-row">
             <div class="field title-field">
     <label>Title</label>
-
     <div class="title-search">
-
         <input
             id="title"
             type="text"
             placeholder="Movie, Anime or TV Series"
             autocomplete="off">
-
         <div id="searchResults" class="search-results"></div>
-
     </div>
-
 </div>
             <div class="field">
                 <label>Genre</label>
@@ -106,6 +101,18 @@
             <button id="deleteYes">
                 Yes
             </button>
+        </div>
+    </div>
+</div>
+<div id="detailsModal" class="modal">
+    <div class="modal-content details-content">
+        <button class="icon-btn" id="closeDetails">✕</button>
+        <img id="detailsBackdrop" class="details-backdrop" src="" alt="">
+        <div class="details-body">
+            <h2 id="detailsTitle"></h2>
+            <div class="badges" id="detailsBadges"></div>
+            <p id="detailsMeta" class="details-meta"></p>
+            <p id="detailsOverview"></p>
         </div>
     </div>
 </div>
