@@ -122,6 +122,112 @@ async function getPoster(title, type) {
 
 }
 
+const detailsCache = {};
+
+async function getTMDBDetails(title, type) {
+
+    const cacheKey = `${type}_${title}`;
+
+    if (detailsCache[cacheKey]) {
+        return detailsCache[cacheKey];
+    }
+
+    const endpoint =
+        type === "Movie"
+            ? "movie"
+            : "tv";
+
+    try {
+
+        const response = await fetch(
+            `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`
+        );
+
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+
+            const result = data.results[0];
+
+            const details = {
+                poster: result.poster_path
+                    ? `${TMDB_IMAGE}${result.poster_path}`
+                    : "https://placehold.co/500x750?text=No+Poster",
+                backdrop: result.backdrop_path
+                    ? `https://image.tmdb.org/t/p/w1280${result.backdrop_path}`
+                    : null,
+                overview: result.overview || "No description available.",
+                rating: result.vote_average
+                    ? result.vote_average.toFixed(1)
+                    : null,
+                year: (result.release_date || result.first_air_date || "").substring(0, 4)
+            };
+
+            detailsCache[cacheKey] = details;
+
+            return details;
+
+        }
+
+    } catch (err) {
+
+        console.error("TMDB Details Error:", err);
+
+    }
+
+    return {
+        poster: "https://placehold.co/500x750?text=No+Poster",
+        backdrop: null,
+        overview: "No description available.",
+        rating: null,
+        year: ""
+    };
+
+}
+
+async function openDetailsModal(item) {
+
+    const modal = document.getElementById("detailsModal");
+    const backdropImg = document.getElementById("detailsBackdrop");
+    const titleEl = document.getElementById("detailsTitle");
+    const overviewEl = document.getElementById("detailsOverview");
+    const badgesEl = document.getElementById("detailsBadges");
+    const metaEl = document.getElementById("detailsMeta");
+
+    titleEl.textContent = item.title;
+    overviewEl.textContent = "Loading description...";
+    metaEl.textContent = "";
+    backdropImg.src = "";
+
+    badgesEl.innerHTML = `
+        <span class="badge">${item.type}</span>
+        <span class="badge ${genreClass(item.genre)}">${item.genre}</span>
+    `;
+
+    modal.classList.add("show");
+
+    const details = await getTMDBDetails(item.title, item.type);
+
+    backdropImg.src = details.backdrop || details.poster;
+    overviewEl.textContent = details.overview;
+
+    metaEl.textContent = [
+        details.year,
+        details.rating ? `⭐ ${details.rating}` : null
+    ].filter(Boolean).join(" · ");
+
+}
+
+document.getElementById("closeDetails").addEventListener("click", () => {
+    document.getElementById("detailsModal").classList.remove("show");
+});
+
+document.getElementById("detailsModal").addEventListener("click", (e) => {
+    if (e.target.id === "detailsModal") {
+        e.currentTarget.classList.remove("show");
+    }
+});
+
 function updateFields() {
 
     if (type.value === "Movie") {
@@ -448,6 +554,14 @@ if (editBtn) {
     });
 
 }
+
+const posterImg = card.querySelector(".poster");
+const cardTitle = card.querySelector("h3");
+
+[posterImg, cardTitle].forEach(el => {
+    el.style.cursor = "pointer";
+    el.addEventListener("click", () => openDetailsModal(item));
+});
 
 return card;
 
