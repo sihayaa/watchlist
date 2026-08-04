@@ -404,10 +404,39 @@ modalLeftOffInput.addEventListener("input", function () {
 
 });
 
+// Genre filter and sort live inside a popup panel anchored to the funnel
+// button, so the toolbar doesn't need two separate dropdowns on display.
+const filterBtn = document.getElementById("filterBtn");
+const filterPanel = document.getElementById("filterPanel");
+const filterDot = document.getElementById("filterDot");
+
+filterBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    filterPanel.classList.toggle("show");
+});
+
+document.addEventListener("click", (e) => {
+    if (!filterPanel.contains(e.target) && e.target !== filterBtn) {
+        filterPanel.classList.remove("show");
+    }
+});
+
+function updateFilterDot() {
+    const isActive = filterGenre.value !== "" || sortBy.value !== "title";
+    filterDot.classList.toggle("show", isActive);
+}
+
 // Genre filter and sort both re-run the query against Supabase directly,
 // so filtering/sorting stays fast even as the list grows.
-filterGenre.addEventListener("change", loadWatchlist);
-sortBy.addEventListener("change", loadWatchlist);
+filterGenre.addEventListener("change", () => {
+    updateFilterDot();
+    loadWatchlist();
+});
+
+sortBy.addEventListener("change", () => {
+    updateFilterDot();
+    loadWatchlist();
+});
 
 async function loadWatchlist() {
 
