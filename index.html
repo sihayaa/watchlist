@@ -59,25 +59,41 @@
         </div>
         <div class="search-row">
             <input id="search" type="text" placeholder="🔍 Search titles...">
-            <select id="filterGenre">
-                <option value="">All Genres</option>
-                <option>Action</option>
-                <option>Adventure</option>
-                <option>Animation</option>
-                <option>Comedy</option>
-                <option>Crime</option>
-                <option>Drama</option>
-                <option>Fantasy</option>
-                <option>Horror</option>
-                <option>Mystery</option>
-                <option>Romance</option>
-                <option>Sci-Fi</option>
-                <option>Thriller</option>
-            </select>
-            <select id="sortBy">
-                <option value="title">Title (A–Z)</option>
-                <option value="created_at">Recently Added</option>
-            </select>
+            <div class="filter-wrapper">
+                <button id="filterBtn" class="filter-btn" type="button" title="Filter & Sort">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="4 4 20 4 14 12.5 14 19 10 21 10 12.5 4 4"></polygon>
+                    </svg>
+                    <span id="filterDot" class="filter-dot"></span>
+                </button>
+                <div id="filterPanel" class="filter-panel">
+                    <div class="field">
+                        <label>Genre</label>
+                        <select id="filterGenre">
+                            <option value="">All Genres</option>
+                            <option>Action</option>
+                            <option>Adventure</option>
+                            <option>Animation</option>
+                            <option>Comedy</option>
+                            <option>Crime</option>
+                            <option>Drama</option>
+                            <option>Fantasy</option>
+                            <option>Horror</option>
+                            <option>Mystery</option>
+                            <option>Romance</option>
+                            <option>Sci-Fi</option>
+                            <option>Thriller</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Sort</label>
+                        <select id="sortBy">
+                            <option value="title">Title (A–Z)</option>
+                            <option value="created_at">Recently Added</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             <button id="historyBtn" class="history-btn" type="button">✅ Completed</button>
         </div>
     </div>
