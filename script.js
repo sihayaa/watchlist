@@ -65,6 +65,8 @@ const watchlist = document.getElementById("watchlist");
 const search = document.getElementById("search");
 const historyBtn = document.getElementById("historyBtn");
 const pageTitle = document.getElementById("pageTitle");
+const filterGenre = document.getElementById("filterGenre");
+const sortBy = document.getElementById("sortBy");
 
 const seasonField = season.parentElement;
 const episodeField = episode.parentElement;
@@ -402,15 +404,31 @@ modalLeftOffInput.addEventListener("input", function () {
 
 });
 
+// Genre filter and sort both re-run the query against Supabase directly,
+// so filtering/sorting stays fast even as the list grows.
+filterGenre.addEventListener("change", loadWatchlist);
+sortBy.addEventListener("change", loadWatchlist);
+
 async function loadWatchlist() {
-    
+
     watchlist.innerHTML = "";
 
-    const { data, error } = await supabaseClient
+    let query = supabaseClient
         .from("watchlist")
         .select("*")
-        .eq("completed", showingHistory)
-        .order("title", { ascending: true });
+        .eq("completed", showingHistory);
+
+    if (filterGenre.value) {
+        query = query.eq("genre", filterGenre.value);
+    }
+
+    if (sortBy.value === "created_at") {
+        query = query.order("created_at", { ascending: false });
+    } else {
+        query = query.order("title", { ascending: true });
+    }
+
+    const { data, error } = await query;
 
     if (error) {
 
@@ -421,8 +439,8 @@ async function loadWatchlist() {
 
     // Build all cards in parallel (each still awaits its own poster fetch),
     // but wait for ALL of them before appending — otherwise whichever
-    // poster loads fastest gets appended first, breaking the alphabetical
-    // order the query already returned.
+    // poster loads fastest gets appended first, breaking the sort order
+    // the query already returned.
     const cards = await Promise.all(
         data.map((item, index) => renderCard(item, index))
     );
