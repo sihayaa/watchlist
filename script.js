@@ -57,7 +57,49 @@ spawnFireflies();
 
 const type = document.getElementById("type");
 const title = document.getElementById("title");
-const genre = document.getElementById("genre");
+const genreBtn = document.getElementById("genreBtn");
+const genreBtnLabel = document.getElementById("genreBtnLabel");
+const genrePanel = document.getElementById("genrePanel");
+const genreCheckboxes = document.querySelectorAll('#genrePanel input[type="checkbox"]');
+
+let selectedGenres = [];
+
+genreBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    genrePanel.classList.toggle("show");
+});
+
+// Clicking outside the panel just closes it — the checkbox state is
+// already live in selectedGenres, so nothing extra needs to be "saved".
+document.addEventListener("click", (e) => {
+    if (!genrePanel.contains(e.target) && !genreBtn.contains(e.target)) {
+        genrePanel.classList.remove("show");
+    }
+});
+
+genreCheckboxes.forEach(cb => {
+    cb.addEventListener("change", () => {
+        selectedGenres = Array.from(genreCheckboxes)
+            .filter(c => c.checked)
+            .map(c => c.value);
+        updateGenreLabel();
+    });
+});
+
+function updateGenreLabel() {
+    genreBtnLabel.textContent = selectedGenres.length
+        ? selectedGenres.join(", ")
+        : "Select Genres";
+}
+
+function renderGenreBadges(genreString) {
+    return (genreString || "")
+        .split(",")
+        .map(g => g.trim())
+        .filter(Boolean)
+        .map(g => `<span class="badge ${genreClass(g)}">${g}</span>`)
+        .join("");
+}
 const season = document.getElementById("season");
 const episode = document.getElementById("episode");
 const addBtn = document.getElementById("addBtn");
@@ -237,7 +279,7 @@ async function openDetailsModal(item) {
 
     badgesEl.innerHTML = `
         <span class="badge">${item.type}</span>
-        <span class="badge ${genreClass(item.genre)}">${item.genre}</span>
+        ${renderGenreBadges(item.genre)}
     `;
 
     modal.classList.add("show");
@@ -448,7 +490,7 @@ async function loadWatchlist() {
         .eq("completed", showingHistory);
 
     if (filterGenre.value) {
-        query = query.eq("genre", filterGenre.value);
+        query = query.ilike("genre", `%${filterGenre.value}%`);
     }
 
     if (sortBy.value === "created_at") {
@@ -554,7 +596,7 @@ ${item.type !== "Movie" ? `
 
 <div class="badges">
 <span class="badge">${item.type}</span>
-<span class="badge ${genreClass(item.genre)}">${item.genre}</span>
+${renderGenreBadges(item.genre)}
 </div>
 
 ${progressHTML}
@@ -707,9 +749,14 @@ async function addItem() {
         return;
     }
 
+    if (selectedGenres.length === 0) {
+        alert("Please select at least one genre.");
+        return;
+    }
+
     const newItem = {
         title: title.value.trim(),
-        genre: genre.value,
+        genre: selectedGenres.join(", "),
         type: type.value,
         season: type.value === "Movie"
             ? null
@@ -733,6 +780,9 @@ async function addItem() {
     title.value = "";
     season.value = 1;
     episode.value = 1;
+    selectedGenres = [];
+    genreCheckboxes.forEach(cb => { cb.checked = false; });
+    updateGenreLabel();
 
     loadWatchlist();
 
