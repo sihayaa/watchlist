@@ -60,7 +60,7 @@ const title = document.getElementById("title");
 const genreBtn = document.getElementById("genreBtn");
 const genreBtnLabel = document.getElementById("genreBtnLabel");
 const genrePanel = document.getElementById("genrePanel");
-const genreCheckboxes = document.querySelectorAll('#genrePanel input[type="checkbox"]');
+const genreOptions = document.querySelectorAll("#genrePanel .genre-option");
 
 let selectedGenres = [];
 
@@ -69,7 +69,7 @@ genreBtn.addEventListener("click", (e) => {
     genrePanel.classList.toggle("show");
 });
 
-// Clicking outside the panel just closes it — the checkbox state is
+// Clicking outside the panel just closes it — the highlighted options are
 // already live in selectedGenres, so nothing extra needs to be "saved".
 document.addEventListener("click", (e) => {
     if (!genrePanel.contains(e.target) && !genreBtn.contains(e.target)) {
@@ -77,12 +77,17 @@ document.addEventListener("click", (e) => {
     }
 });
 
-genreCheckboxes.forEach(cb => {
-    cb.addEventListener("change", () => {
-        selectedGenres = Array.from(genreCheckboxes)
-            .filter(c => c.checked)
-            .map(c => c.value);
+genreOptions.forEach(opt => {
+    opt.addEventListener("click", () => {
+
+        opt.classList.toggle("selected");
+
+        selectedGenres = Array.from(genreOptions)
+            .filter(o => o.classList.contains("selected"))
+            .map(o => o.dataset.genre);
+
         updateGenreLabel();
+
     });
 });
 
@@ -781,7 +786,7 @@ async function addItem() {
     season.value = 1;
     episode.value = 1;
     selectedGenres = [];
-    genreCheckboxes.forEach(cb => { cb.checked = false; });
+    genreOptions.forEach(opt => { opt.classList.remove("selected"); });
     updateGenreLabel();
 
     loadWatchlist();
