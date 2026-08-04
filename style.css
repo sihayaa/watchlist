@@ -77,8 +77,11 @@ h1:hover{
     margin-top:18px;
     display:flex;
     align-items:center;
-    justify-content:space-between;
     gap:14px;
+}
+
+.search-row .history-btn{
+    margin-left:auto;
 }
 
 .field{
