@@ -22,22 +22,28 @@
         <div id="searchResults" class="search-results"></div>
     </div>
 </div>
-            <div class="field">
+            <div class="field genre-field">
                 <label>Genre</label>
-                <select id="genre">
-                    <option>Action</option>
-                    <option>Adventure</option>
-                    <option>Animation</option>
-                    <option>Comedy</option>
-                    <option>Crime</option>
-                    <option>Drama</option>
-                    <option>Fantasy</option>
-                    <option>Horror</option>
-                    <option>Mystery</option>
-                    <option>Romance</option>
-                    <option>Sci-Fi</option>
-                    <option>Thriller</option>
-                </select>
+                <div class="genre-select-wrapper">
+                    <button type="button" id="genreBtn" class="genre-select-btn">
+                        <span id="genreBtnLabel">Select Genres</span>
+                        <svg class="chevron" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                    <div id="genrePanel" class="genre-panel">
+                        <label class="genre-option"><input type="checkbox" value="Action"> Action</label>
+                        <label class="genre-option"><input type="checkbox" value="Adventure"> Adventure</label>
+                        <label class="genre-option"><input type="checkbox" value="Animation"> Animation</label>
+                        <label class="genre-option"><input type="checkbox" value="Comedy"> Comedy</label>
+                        <label class="genre-option"><input type="checkbox" value="Crime"> Crime</label>
+                        <label class="genre-option"><input type="checkbox" value="Drama"> Drama</label>
+                        <label class="genre-option"><input type="checkbox" value="Fantasy"> Fantasy</label>
+                        <label class="genre-option"><input type="checkbox" value="Horror"> Horror</label>
+                        <label class="genre-option"><input type="checkbox" value="Mystery"> Mystery</label>
+                        <label class="genre-option"><input type="checkbox" value="Romance"> Romance</label>
+                        <label class="genre-option"><input type="checkbox" value="Sci-Fi"> Sci-Fi</label>
+                        <label class="genre-option"><input type="checkbox" value="Thriller"> Thriller</label>
+                    </div>
+                </div>
             </div>
             <div class="field">
                 <label>Type</label>
