@@ -57,7 +57,54 @@ spawnFireflies();
 
 const type = document.getElementById("type");
 const title = document.getElementById("title");
-const genre = document.getElementById("genre");
+const genreBtn = document.getElementById("genreBtn");
+const genreBtnLabel = document.getElementById("genreBtnLabel");
+const genrePanel = document.getElementById("genrePanel");
+const genreOptions = document.querySelectorAll("#genrePanel .genre-option");
+
+let selectedGenres = [];
+
+genreBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    genrePanel.classList.toggle("show");
+});
+
+// Clicking outside the panel just closes it — the highlighted options are
+// already live in selectedGenres, so nothing extra needs to be "saved".
+document.addEventListener("click", (e) => {
+    if (!genrePanel.contains(e.target) && !genreBtn.contains(e.target)) {
+        genrePanel.classList.remove("show");
+    }
+});
+
+genreOptions.forEach(opt => {
+    opt.addEventListener("click", () => {
+
+        opt.classList.toggle("selected");
+
+        selectedGenres = Array.from(genreOptions)
+            .filter(o => o.classList.contains("selected"))
+            .map(o => o.dataset.genre);
+
+        updateGenreLabel();
+
+    });
+});
+
+function updateGenreLabel() {
+    genreBtnLabel.textContent = selectedGenres.length
+        ? selectedGenres.join(", ")
+        : "Select Genres";
+}
+
+function renderGenreBadges(genreString) {
+    return (genreString || "")
+        .split(",")
+        .map(g => g.trim())
+        .filter(Boolean)
+        .map(g => `<span class="badge ${genreClass(g)}">${g}</span>`)
+        .join("");
+}
 const season = document.getElementById("season");
 const episode = document.getElementById("episode");
 const addBtn = document.getElementById("addBtn");
@@ -65,6 +112,8 @@ const watchlist = document.getElementById("watchlist");
 const search = document.getElementById("search");
 const historyBtn = document.getElementById("historyBtn");
 const pageTitle = document.getElementById("pageTitle");
+const filterGenre = document.getElementById("filterGenre");
+const sortBy = document.getElementById("sortBy");
 
 const seasonField = season.parentElement;
 const episodeField = episode.parentElement;
@@ -79,9 +128,9 @@ let selectedTMDB = null;
 let searchTimeout = null;
 const searchResults = document.getElementById("searchResults");
 
-async function getPoster(title, type, tmdbId) {
+async function getPoster(title, type) {
 
-    const cacheKey = tmdbId ? `id_${tmdbId}` : `${type}_${title}`;
+    const cacheKey = `${type}_${title}`;
 
     if (posterCache[cacheKey]) {
         return posterCache[cacheKey];
@@ -94,29 +143,6 @@ async function getPoster(title, type, tmdbId) {
 
     try {
 
-        // If we know the exact TMDB id (saved when the item was added via
-        // search), fetch that record directly — this avoids picking the
-        // wrong result when multiple titles share the same name (e.g. "Us").
-        if (tmdbId) {
-
-            const response = await fetch(
-                `https://api.themoviedb.org/3/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}`
-            );
-
-            const data = await response.json();
-
-            const poster = data.poster_path
-                ? `${TMDB_IMAGE}${data.poster_path}`
-                : "https://placehold.co/300x450?text=No+Poster";
-
-            posterCache[cacheKey] = poster;
-
-            return poster;
-
-        }
-
-        // Fallback for items added before tmdb_id was tracked, or added
-        // without picking a specific search result.
         const response = await fetch(
             `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`
         );
@@ -147,9 +173,9 @@ async function getPoster(title, type, tmdbId) {
 
 const detailsCache = {};
 
-async function getTMDBDetails(title, type, tmdbId) {
+async function getTMDBDetails(title, type) {
 
-    const cacheKey = tmdbId ? `id_${tmdbId}` : `${type}_${title}`;
+    const cacheKey = `${type}_${title}`;
 
     if (detailsCache[cacheKey]) {
         return detailsCache[cacheKey];
@@ -162,73 +188,68 @@ async function getTMDBDetails(title, type, tmdbId) {
 
     try {
 
-        let result;
+        const response = await fetch(
+            `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`
+        );
 
-        if (tmdbId) {
+        const data = await response.json();
 
-            // Known exact record — fetch it directly. This also gives us
-            // runtime/overview/etc. in a single call.
-            const response = await fetch(
-                `https://api.themoviedb.org/3/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}`
-            );
+        if (data.results && data.results.length > 0) {
 
-            result = await response.json();
+            const result = data.results[0];
 
-        } else {
+            // The search endpoint doesn't return runtime — a second call
+            // to the full detail endpoint is needed to get it.
+            let runtime = null;
 
-            // Fallback for items added before tmdb_id was tracked.
-            const searchResponse = await fetch(
-                `https://api.themoviedb.org/3/search/${endpoint}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`
-            );
+            try {
 
-            const searchData = await searchResponse.json();
+                const detailResponse = await fetch(
+                    `https://api.themoviedb.org/3/${endpoint}/${result.id}?api_key=${TMDB_API_KEY}`
+                );
 
-            if (!searchData.results || searchData.results.length === 0) {
-                throw new Error("No TMDB results found");
+                const detailData = await detailResponse.json();
+
+                if (type === "Movie") {
+
+                    if (detailData.runtime) {
+                        runtime = `${detailData.runtime} min`;
+                    }
+
+                } else {
+
+                    if (detailData.episode_run_time && detailData.episode_run_time.length > 0) {
+                        runtime = `${detailData.episode_run_time[0]} min/ep`;
+                    }
+
+                }
+
+            } catch (err) {
+
+                console.error("TMDB Runtime Error:", err);
+
             }
 
-            const detailResponse = await fetch(
-                `https://api.themoviedb.org/3/${endpoint}/${searchData.results[0].id}?api_key=${TMDB_API_KEY}`
-            );
+            const details = {
+                poster: result.poster_path
+                    ? `${TMDB_IMAGE}${result.poster_path}`
+                    : "https://placehold.co/500x750?text=No+Poster",
+                backdrop: result.backdrop_path
+                    ? `https://image.tmdb.org/t/p/w1280${result.backdrop_path}`
+                    : null,
+                overview: result.overview || "No description available.",
+                rating: result.vote_average
+                    ? result.vote_average.toFixed(1)
+                    : null,
+                year: (result.release_date || result.first_air_date || "").substring(0, 4),
+                runtime: runtime
+            };
 
-            result = await detailResponse.json();
+            detailsCache[cacheKey] = details;
+
+            return details;
 
         }
-
-        let runtime = null;
-
-        if (type === "Movie") {
-
-            if (result.runtime) {
-                runtime = `${result.runtime} min`;
-            }
-
-        } else {
-
-            if (result.episode_run_time && result.episode_run_time.length > 0) {
-                runtime = `${result.episode_run_time[0]} min/ep`;
-            }
-
-        }
-
-        const details = {
-            poster: result.poster_path
-                ? `${TMDB_IMAGE}${result.poster_path}`
-                : "https://placehold.co/500x750?text=No+Poster",
-            backdrop: result.backdrop_path
-                ? `https://image.tmdb.org/t/p/w1280${result.backdrop_path}`
-                : null,
-            overview: result.overview || "No description available.",
-            rating: result.vote_average
-                ? result.vote_average.toFixed(1)
-                : null,
-            year: (result.release_date || result.first_air_date || "").substring(0, 4),
-            runtime: runtime
-        };
-
-        detailsCache[cacheKey] = details;
-
-        return details;
 
     } catch (err) {
 
@@ -263,12 +284,12 @@ async function openDetailsModal(item) {
 
     badgesEl.innerHTML = `
         <span class="badge">${item.type}</span>
-        <span class="badge ${genreClass(item.genre)}">${item.genre}</span>
+        ${renderGenreBadges(item.genre)}
     `;
 
     modal.classList.add("show");
 
-    const details = await getTMDBDetails(item.title, item.type, item.tmdb_id);
+    const details = await getTMDBDetails(item.title, item.type);
 
     backdropImg.src = details.backdrop || details.poster;
     overviewEl.textContent = details.overview;
@@ -430,15 +451,60 @@ modalLeftOffInput.addEventListener("input", function () {
 
 });
 
+// Genre filter and sort live inside a popup panel anchored to the funnel
+// button, so the toolbar doesn't need two separate dropdowns on display.
+const filterBtn = document.getElementById("filterBtn");
+const filterPanel = document.getElementById("filterPanel");
+const filterDot = document.getElementById("filterDot");
+
+filterBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    filterPanel.classList.toggle("show");
+});
+
+document.addEventListener("click", (e) => {
+    if (!filterPanel.contains(e.target) && e.target !== filterBtn) {
+        filterPanel.classList.remove("show");
+    }
+});
+
+function updateFilterDot() {
+    const isActive = filterGenre.value !== "" || sortBy.value !== "title";
+    filterDot.classList.toggle("show", isActive);
+}
+
+// Genre filter and sort both re-run the query against Supabase directly,
+// so filtering/sorting stays fast even as the list grows.
+filterGenre.addEventListener("change", () => {
+    updateFilterDot();
+    loadWatchlist();
+});
+
+sortBy.addEventListener("change", () => {
+    updateFilterDot();
+    loadWatchlist();
+});
+
 async function loadWatchlist() {
-    
+
     watchlist.innerHTML = "";
 
-    const { data, error } = await supabaseClient
+    let query = supabaseClient
         .from("watchlist")
         .select("*")
-        .eq("completed", showingHistory)
-        .order("title", { ascending: true });
+        .eq("completed", showingHistory);
+
+    if (filterGenre.value) {
+        query = query.ilike("genre", `%${filterGenre.value}%`);
+    }
+
+    if (sortBy.value === "created_at") {
+        query = query.order("created_at", { ascending: false });
+    } else {
+        query = query.order("title", { ascending: true });
+    }
+
+    const { data, error } = await query;
 
     if (error) {
 
@@ -449,8 +515,8 @@ async function loadWatchlist() {
 
     // Build all cards in parallel (each still awaits its own poster fetch),
     // but wait for ALL of them before appending — otherwise whichever
-    // poster loads fastest gets appended first, breaking the alphabetical
-    // order the query already returned.
+    // poster loads fastest gets appended first, breaking the sort order
+    // the query already returned.
     const cards = await Promise.all(
         data.map((item, index) => renderCard(item, index))
     );
@@ -467,7 +533,7 @@ function genreClass(genre) {
 
 async function renderCard(item, index) {
 
-    const poster = await getPoster(item.title, item.type, item.tmdb_id);
+    const poster = await getPoster(item.title, item.type);
 
     const card = document.createElement("div");
     card.className = "card";
@@ -535,7 +601,7 @@ ${item.type !== "Movie" ? `
 
 <div class="badges">
 <span class="badge">${item.type}</span>
-<span class="badge ${genreClass(item.genre)}">${item.genre}</span>
+${renderGenreBadges(item.genre)}
 </div>
 
 ${progressHTML}
@@ -688,9 +754,14 @@ async function addItem() {
         return;
     }
 
+    if (selectedGenres.length === 0) {
+        alert("Please select at least one genre.");
+        return;
+    }
+
     const newItem = {
         title: title.value.trim(),
-        genre: genre.value,
+        genre: selectedGenres.join(", "),
         type: type.value,
         season: type.value === "Movie"
             ? null
@@ -698,8 +769,7 @@ async function addItem() {
         episode: type.value === "Movie"
             ? null
             : Number(episode.value),
-        completed: false,
-        tmdb_id: selectedTMDB ? selectedTMDB.id : null
+        completed: false
     };
 
     const { error } = await supabaseClient
@@ -715,6 +785,9 @@ async function addItem() {
     title.value = "";
     season.value = 1;
     episode.value = 1;
+    selectedGenres = [];
+    genreOptions.forEach(opt => { opt.classList.remove("selected"); });
+    updateGenreLabel();
 
     loadWatchlist();
 
@@ -767,12 +840,12 @@ async function preloadPosters() {
 
     const { data } = await supabaseClient
         .from("watchlist")
-        .select("title,type,tmdb_id");
+        .select("title,type");
 
     if (!data) return;
 
     data.forEach(item => {
-        getPoster(item.title, item.type, item.tmdb_id);
+        getPoster(item.title, item.type);
     });
 
 }
