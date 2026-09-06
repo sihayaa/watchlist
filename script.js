@@ -802,7 +802,7 @@ historyBtn.addEventListener("click", () => {
     historyBtn.textContent = showingHistory ? "← Back to Watchlist" : "✅ Completed";
 
     if (pageTitle) {
-        pageTitle.textContent = showingHistory ? "✅ Completed" : "🎬 Our Watchlist";
+        pageTitle.textContent = showingHistory ? "✅ Completed" : "🎬 Watchlist";
     }
 
     loadWatchlist();
